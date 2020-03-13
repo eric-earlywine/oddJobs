@@ -1,0 +1,81 @@
+entity Job {
+	jobName String,
+    user User,
+    location Location,
+    payType PayType,
+    payAmt Integer,
+    jobDetails JobDetails
+}
+
+entity User {
+	username String,
+    password String,
+    email String,
+    userDetails UserDetails,
+    jobs String
+}
+entity Location {
+	streetAddress String,
+	postalCode String,
+	city String,
+	stateProvince String
+}
+
+entity JobDetails {
+	difficulty String,
+    description String,
+    tags String
+}
+
+entity UserDetails {
+	profilePicture String,
+    description String,
+    rating String,
+    jobPostings Integer,
+    jobCompletions Integer
+}
+
+entity Tag {
+	tagName String,
+	description String
+}
+
+enum PayType {
+	HOURLY,
+    DAILY,
+    JOBCOMPLETION
+}
+
+relationship OneToOne {
+	Job{jobDetails} to JobDetails{job}
+}
+
+relationship OneToOne {
+	User{userDetails} to UserDetails{user}
+}
+
+relationship ManyToOne {
+	Job{user} to User{job}
+}
+
+relationship ManyToMany {
+	JobDetails{tag} to Tag{jobDetails}
+}
+
+relationship OneToMany {
+	User{job} to Job{user}
+}
+
+relationship OneToMany {
+	Job{location} to Location{job}
+}
+
+// Set pagination options
+paginate Job with infinite-scroll
+paginate User with pagination
+
+// Use Data Transfert Objects (DTO)
+// dto * with mapstruct
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
