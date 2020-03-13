@@ -1,0 +1,40 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "org.launchcode.oddjobs"
+    },
+    "jhipsterVersion": "6.7.1",
+    "applicationType": "monolith",
+    "baseName": "oddJobs",
+    "packageName": "org.launchcode.oddjobs",
+    "packageFolder": "org/launchcode/oddjobs",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "gradle",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "ZjAxZjhmYzc3MmY4N2YxYzY3NDViN2YzNzhmZjFiNmVjZWUyMWM3Mzg2ZmNmZDAyYjgwM2E2NTk1N2E5YmZlNTg3OTk1YmZhNzZlZmI0ZDYyYjIzYWUyZWQzMTdmODQ1YmMyNGRkYWZkOTg4NDlhYTk0MDhkNTdjNWQzNmI3MjI=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "clientFramework": "angularX",
+    "clientTheme": "minty",
+    "clientThemeVariant": "primary",
+    "creationTimestamp": 1584069938408,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}
