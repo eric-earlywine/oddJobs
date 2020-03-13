@@ -1,0 +1,40 @@
+{
+    "name": "Location",
+    "fields": [
+        {
+            "fieldName": "streetAddress",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "postalCode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "city",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "stateProvince",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "job",
+            "otherEntityRelationshipName": "location",
+            "relationshipName": "job",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20200313054000",
+    "entityTableName": "location",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

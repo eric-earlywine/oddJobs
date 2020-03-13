@@ -1,0 +1,51 @@
+{
+    "name": "Job",
+    "fields": [
+        {
+            "fieldName": "jobName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "payType",
+            "fieldType": "PayType",
+            "fieldValues": "HOURLY,DAILY,JOBCOMPLETION"
+        },
+        {
+            "fieldName": "payAmt",
+            "fieldType": "Integer"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "jobDetails",
+            "otherEntityRelationshipName": "job",
+            "relationshipName": "jobDetails",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "location",
+            "otherEntityRelationshipName": "job",
+            "relationshipName": "location"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "newUser",
+            "otherEntityRelationshipName": "job",
+            "relationshipName": "newUser",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20200313053800",
+    "entityTableName": "job",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

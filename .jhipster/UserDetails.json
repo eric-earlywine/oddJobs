@@ -1,0 +1,44 @@
+{
+    "name": "UserDetails",
+    "fields": [
+        {
+            "fieldName": "profilePicture",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "rating",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "jobPostings",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "jobCompletions",
+            "fieldType": "Integer"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "newUser",
+            "otherEntityRelationshipName": "userDetails",
+            "relationshipName": "newUser",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20200313054200",
+    "entityTableName": "user_details",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

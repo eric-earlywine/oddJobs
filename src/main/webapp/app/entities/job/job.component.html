@@ -1,0 +1,77 @@
+<div>
+    <h2 id="page-heading">
+        <span>Jobs</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-job" [routerLink]="['/job/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span>
+            Create a new Job
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="jobs?.length === 0">
+        <span>No jobs found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="jobs?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="reset.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="jobName"><span>Job Name</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="payType"><span>Pay Type</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="payAmt"><span>Pay Amt</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="jobDetails.id"><span>Job Details</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="newUser.id"><span>New User</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+                <tr *ngFor="let job of jobs ;trackBy: trackId">
+                    <td><a [routerLink]="['/job', job.id, 'view']">{{ job.id }}</a></td>
+                    <td>{{ job.jobName }}</td>
+                    <td>{{ job.payType }}</td>
+                    <td>{{ job.payAmt }}</td>
+                    <td>
+                        <div *ngIf="job.jobDetails">
+                            <a [routerLink]="['/job-details', job.jobDetails?.id, 'view']" >{{ job.jobDetails?.id }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="job.newUser">
+                            <a [routerLink]="['/new-user', job.newUser?.id, 'view']" >{{ job.newUser?.id }}</a>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/job', job.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/job', job.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(job)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

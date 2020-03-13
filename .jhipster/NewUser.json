@@ -1,0 +1,43 @@
+{
+    "name": "NewUser",
+    "fields": [
+        {
+            "fieldName": "username",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "password",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "email",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "userDetails",
+            "otherEntityRelationshipName": "newUser",
+            "relationshipName": "userDetails",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "job",
+            "otherEntityRelationshipName": "newUser",
+            "relationshipName": "job"
+        }
+    ],
+    "changelogDate": "20200313053900",
+    "entityTableName": "new_user",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

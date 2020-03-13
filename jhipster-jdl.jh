@@ -1,18 +1,13 @@
 entity Job {
 	jobName String,
-    user User,
-    location Location,
     payType PayType,
     payAmt Integer,
-    jobDetails JobDetails
 }
 
-entity User {
+entity NewUser {
 	username String,
     password String,
     email String,
-    userDetails UserDetails,
-    jobs String
 }
 entity Location {
 	streetAddress String,
@@ -24,7 +19,6 @@ entity Location {
 entity JobDetails {
 	difficulty String,
     description String,
-    tags String
 }
 
 entity UserDetails {
@@ -51,19 +45,15 @@ relationship OneToOne {
 }
 
 relationship OneToOne {
-	User{userDetails} to UserDetails{user}
+	NewUser{userDetails} to UserDetails{newUser}
 }
 
-relationship ManyToOne {
-	Job{user} to User{job}
+relationship OneToMany {
+	NewUser{job} to Job{newUser}
 }
 
 relationship ManyToMany {
 	JobDetails{tag} to Tag{jobDetails}
-}
-
-relationship OneToMany {
-	User{job} to Job{user}
 }
 
 relationship OneToMany {
@@ -72,7 +62,7 @@ relationship OneToMany {
 
 // Set pagination options
 paginate Job with infinite-scroll
-paginate User with pagination
+paginate NewUser with pagination
 
 // Use Data Transfert Objects (DTO)
 // dto * with mapstruct

@@ -1,0 +1,56 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <h2 id="jhi-user-details-heading">Create or edit a User Details</h2>
+
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_profilePicture">Profile Picture</label>
+                    <input type="text" class="form-control" name="profilePicture" id="field_profilePicture"
+                           formControlName="profilePicture"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_description">Description</label>
+                    <input type="text" class="form-control" name="description" id="field_description"
+                           formControlName="description"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_rating">Rating</label>
+                    <input type="text" class="form-control" name="rating" id="field_rating"
+                           formControlName="rating"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_jobPostings">Job Postings</label>
+                    <input type="number" class="form-control" name="jobPostings" id="field_jobPostings"
+                           formControlName="jobPostings"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_jobCompletions">Job Completions</label>
+                    <input type="number" class="form-control" name="jobCompletions" id="field_jobCompletions"
+                           formControlName="jobCompletions"/>
+                </div>
+            </div>
+
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
