@@ -46,6 +46,12 @@ export class NavbarComponent implements OnInit {
   login(): void {
     this.loginModalService.open();
   }
+  getUser(): string {
+    if (this.isAuthenticated()) {
+      return this.accountService.userIdentity.login;
+    }
+    return 'Account';
+  }
 
   logout(): void {
     this.collapseNavbar();

@@ -77,6 +77,8 @@ export class AccountService {
     if (previousUrl) {
       this.stateStorageService.clearUrl();
       this.router.navigateByUrl(previousUrl);
+    } else {
+      this.router.navigate(['job']);
     }
   }
 }
