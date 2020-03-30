@@ -55,6 +55,60 @@
                         </small>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="login">First name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First name"
+                           formControlName="firstName" #firstName>
+
+                    <div *ngIf="registerForm.get('firstName')!.invalid && (registerForm.get('firstName')!.dirty || registerForm.get('firstName')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('firstName')?.errors?.required">
+                            Your first name is required.
+                        </small>
+
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('firstName')?.errors?.minlength">
+                            Your name is required to be at least 1 character.
+                        </small>
+
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('firstName')?.errors?.maxlength">
+                            Your name cannot be longer than 50 characters.
+                        </small>
+
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('firstName')?.errors?.pattern">
+                            Your first name seems to be invalid. Only letters and hyphens allowed.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="lastName">Last name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name"
+                           formControlName="lastName" #lastName>
+
+                    <div *ngIf="registerForm.get('lastName')!.invalid && (registerForm.get('lastName')!.dirty || registerForm.get('lastName')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('lastName')?.errors?.required">
+                            Your last name is required.
+                        </small>
+
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('lastName')?.errors?.minlength">
+                            Your last name is required to be at least 1 character.
+                        </small>
+
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('lastName')?.errors?.maxlength">
+                            Your last name cannot be longer than 50 characters.
+                        </small>
+
+                        <small class="form-text text-danger"
+                               *ngIf="registerForm.get('lastName')?.errors?.pattern">
+                            Your last name can only contain letters and hyphens.
+                        </small>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="email">Email</label>
@@ -68,7 +122,7 @@
                         </small>
 
                         <small class="form-text text-danger"
-                               *ngIf="registerForm.get('email')?.errors?.invalid">
+                               *ngIf="registerForm.get('email')?.errors?.email">
                             Your email is invalid.
                         </small>
 
@@ -132,13 +186,13 @@
                     </div>
                 </div>
 
-                <button type="submit" [disabled]="registerForm.invalid" class="btn btn-primary">Register</button>
+                <button type="submit" [hidden]="registerForm.invalid" class="btn btn-primary">Register</button>
+                <button type="submit" [disabled]="registerForm.invalid" [hidden]="registerForm.valid" class="btn btn-danger">Register</button>
+                <small class="form-text text-danger"
+                       *ngIf="registerForm.invalid">
+                    Please fill out all fields.
+                </small>
             </form>
-
-            <div class="mt-3 alert alert-warning">
-                <span>If you want to </span>
-                <a class="alert-link" (click)="openLogin()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
-            </div>
         </div>
     </div>
 </div>
