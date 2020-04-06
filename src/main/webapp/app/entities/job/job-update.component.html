@@ -1,4 +1,7 @@
-<div class="row justify-content-center">
+<script type="text/javascript">
+
+</script>
+<div class="row">
     <div class="col-md-3">
         <div>
             <span class="dog img-fluid rounded"></span>
@@ -7,7 +10,7 @@
     </div>
     <div class="col-md-6">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-            <h2 id="jhi-job-heading">Create or edit a Job</h2>
+            <h2 id="jhi-job-heading" class="text-center">Create or edit a Job</h2>
 
             <div>
                 <jhi-alert-error></jhi-alert-error>
@@ -18,9 +21,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_payAmt">Payment Amount</label>
-                    <input type="number" class="form-control" name="payAmt" id="field_payAmt"
-                           formControlName="payAmt"/>
+                    <label class="form-control-label" for="field_payAmt">Payment Amount (in USD)</label><br>
+                    <label class="form-control-label" for="field_payAmt">$</label>
+                    <span class="cost"><input type="number" min="0" placeholder="0.00" class="form-control" name="payAmt" id="field_payAmt"
+                                 formControlName="payAmt"/></label></span>
+
                 </div>
 
                 <div class="form-group">
@@ -33,23 +38,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_jobDetails">Job Details</label>
-                    <select class="form-control" id="field_jobDetails" name="jobDetails" formControlName="jobDetails">
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="jobDetailsOption.id === editForm.get('jobDetails')!.value?.id ? editForm.get('jobDetails')!.value : jobDetailsOption" *ngFor="let jobDetailsOption of jobdetails; trackBy: trackById">{{ jobDetailsOption.id }}</option>
-                    </select>
+                    <label class="form-control-label" for="field_jobDesc">Job Description</label>
+                    <textarea class="form-control" id="field_jobDesc" name="jobDesc" formControlName="jobDesc" rows="3"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_newUser">New User</label>
-                    <select class="form-control" id="field_newUser" name="newUser" formControlName="newUser">
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="newUserOption.id === editForm.get('newUser')!.value?.id ? editForm.get('newUser')!.value : newUserOption" *ngFor="let newUserOption of newusers; trackBy: trackById">{{ newUserOption.id }}</option>
-                    </select>
+                    <label class="form-control-label" for="field_jobReqs">Job Requirements:</label>
+                    <ul id="field_jobReqs">
+                        <li *ngFor="let req of reqs">{{req}}</li>
+                    </ul>
+                    <button type="button" id="add-req" class="btn btn-primary btn-sm" (click)="addReq()">
+                        <fa-icon icon="plus"></fa-icon><span>Add Requirement</span>
+                    </button>
                 </div>
             </div>
 
-            <div>
+            <div class="text-center">
                 <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
                     <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
                 </button>
