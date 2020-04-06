@@ -1,0 +1,40 @@
+.dog {
+  display: inline-block;
+  width: 347px;
+  height: 270px;
+  background: url('../../../content/images/Stock_DogWalk.jpeg') no-repeat center top;
+  background-size: contain;
+}
+.paint {
+  display: inline-block;
+  width: 347px;
+  height: 500px;
+  background: url('../../../content/images/Stock_PaintCeil.jpeg') no-repeat center top;
+  background-size: contain;
+}
+.rake {
+  display: inline-block;
+  width: 347px;
+  height: 250px;
+  background: url('../../../content/images/Stock_Raking.jpeg') no-repeat center top;
+  background-size: contain;
+}
+.text-center {
+  text-align: center;
+}
+
+/* wait autoprefixer update to allow simple generation of high pixel density media query */
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+  only screen and (-moz-min-device-pixel-ratio: 2),
+  only screen and (-o-min-device-pixel-ratio: 2/1),
+  only screen and (min-resolution: 192dpi),
+  only screen and (min-resolution: 2dppx) {
+  .hipster {
+    background: url('../../../content/images/Stock_DogWalk.jpeg') no-repeat center top;
+    background-size: contain;
+  }
+  .rake {
+    background: url('../../../content/images/Stock_Raking.jpeg') no-repeat center top;
+    background-size: contain;
+  }
+}

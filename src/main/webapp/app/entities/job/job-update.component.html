@@ -1,35 +1,35 @@
 <div class="row justify-content-center">
-    <div class="col-8">
+    <div class="col-md-3">
+        <div>
+            <span class="dog img-fluid rounded"></span>
+            <span class="rake img-fluid rounded"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-job-heading">Create or edit a Job</h2>
 
             <div>
                 <jhi-alert-error></jhi-alert-error>
-
-                <div class="form-group" [hidden]="!editForm.get('id')!.value">
-                    <label for="id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
-                </div>
-
                 <div class="form-group">
-                    <label class="form-control-label" for="field_jobName">Job Name</label>
+                    <label class="form-control-label" for="field_jobName">Job Title</label>
                     <input type="text" class="form-control" name="jobName" id="field_jobName"
                            formControlName="jobName"/>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_payType">Pay Type</label>
-                    <select class="form-control" name="payType" formControlName="payType" id="field_payType">
-                        <option value="HOURLY">HOURLY</option>
-                        <option value="DAILY">DAILY</option>
-                        <option value="JOBCOMPLETION">JOBCOMPLETION</option>
-                    </select>
+                    <label class="form-control-label" for="field_payAmt">Payment Amount</label>
+                    <input type="number" class="form-control" name="payAmt" id="field_payAmt"
+                           formControlName="payAmt"/>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_payAmt">Pay Amt</label>
-                    <input type="number" class="form-control" name="payAmt" id="field_payAmt"
-                           formControlName="payAmt"/>
+                    <label class="form-control-label" for="field_payType">How will the worker be paid?</label>
+                    <select class="form-control" name="payType" formControlName="payType" id="field_payType">
+                        <option value="HOURLY">Hourly</option>
+                        <option value="DAILY">Daily</option>
+                        <option value="JOBCOMPLETION">When the job is completed</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -59,5 +59,8 @@
                 </button>
             </div>
         </form>
+    </div>
+    <div class="col-md-3">
+        <span class="paint img-fluid rounded"></span>
     </div>
 </div>

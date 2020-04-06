@@ -17,7 +17,8 @@ type SelectableEntity = IJobDetails | INewUser;
 
 @Component({
   selector: 'jhi-job-update',
-  templateUrl: './job-update.component.html'
+  templateUrl: './job-update.component.html',
+  styleUrls: ['job-update.scss']
 })
 export class JobUpdateComponent implements OnInit {
   isSaving = false;
