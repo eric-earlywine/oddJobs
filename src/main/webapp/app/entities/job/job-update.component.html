@@ -39,7 +39,31 @@
                         </small>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_jobLocation">Job Location</label>
+                    <input type="text" class="form-control" name="jobLocation" id="field_jobLocation"
+                           formControlName="jobLocation"/>
+                    <div *ngIf="editForm.get('jobLocation')!.invalid && (editForm.get('jobLocation')!.dirty || editForm.get('jobLocation')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('jobLocation')?.errors?.required">
+                            A job title is required.
+                        </small>
 
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('jobLocation')?.errors?.minlength">
+                            A job title is required to be at least 3 characters.
+                        </small>
+
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('jobLocation')?.errors?.maxlength">
+                            A job title cannot be longer than 50 characters.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" for="field_payAmt">Payment Amount (in USD)</label><br>
                     <label class="form-control-label" for="field_payAmt">$</label>
