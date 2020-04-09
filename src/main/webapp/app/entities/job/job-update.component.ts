@@ -22,20 +22,18 @@ type SelectableEntity = IJobDetails | INewUser;
 })
 export class JobUpdateComponent implements OnInit {
   isSaving = false;
+  reqExists = false;
   jobdetails: IJobDetails[] = [];
   newusers: INewUser[] = [];
   jobReqs: string[] = [];
-
   editForm = this.fb.group({
     id: [],
-    jobName: [],
-    payType: [],
-    payAmt: [],
-    jobDetails: [],
-    newUser: [],
-    jobReq: []
+    jobName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    payType: ['', [Validators.required]],
+    payAmt: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{1,2})?$')]],
+    jobDesc: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(280)]],
+    jobReq: ['', [Validators.minLength(3), Validators.maxLength(80)]]
   });
-
   constructor(
     protected jobService: JobService,
     protected jobDetailsService: JobDetailsService,
@@ -80,18 +78,32 @@ export class JobUpdateComponent implements OnInit {
       jobName: job.jobName,
       payType: job.payType,
       payAmt: job.payAmt,
-      jobDetails: job.jobDetails,
-      newUser: job.newUser
+      jobDesc: job.jobDesc
     });
     this.jobReqs = job.jobReqs ? job.jobReqs : [];
   }
   addReq(): void {
-    this.jobReqs.push(this.editForm.get(['jobReq'])!.value);
+    if (this.editForm.get(['jobReq'])!.value !== '' && this.editForm.get(['jobReq'])!.valid) {
+      if (this.jobReqs.includes(this.editForm.get(['jobReq'])!.value)) {
+        this.reqExists = true;
+      } else {
+        this.reqExists = false;
+        this.jobReqs.push(this.editForm.get(['jobReq'])!.value);
+      }
+    }
+    this.editForm.patchValue({
+      jobReq: ''
+    });
+  }
+  remReq(req: string): void {
+    this.jobReqs.splice(this.jobReqs.indexOf(req), 1);
+  }
+  clearReq(): void {
+    this.jobReqs = [];
   }
   previousState(): void {
     window.history.back();
   }
-
   save(): void {
     this.isSaving = true;
     const job = this.createFromForm();
@@ -109,8 +121,8 @@ export class JobUpdateComponent implements OnInit {
       jobName: this.editForm.get(['jobName'])!.value,
       payType: this.editForm.get(['payType'])!.value,
       payAmt: this.editForm.get(['payAmt'])!.value,
-      jobDetails: this.editForm.get(['jobDetails'])!.value,
-      newUser: this.editForm.get(['newUser'])!.value
+      jobDesc: this.editForm.get(['jobDesc'])!.value,
+      jobReqs: this.jobReqs
     };
   }
 
