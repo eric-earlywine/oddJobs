@@ -7,11 +7,10 @@ import { JobDetailComponent } from './job-detail.component';
 import { JobUpdateComponent } from './job-update.component';
 import { JobDeleteDialogComponent } from './job-delete-dialog.component';
 import { jobRoute } from './job.route';
-import { AddRequirementComponent } from './requirements/add-requirement/add-requirement.component';
 
 @NgModule({
   imports: [OddJobsSharedModule, RouterModule.forChild(jobRoute)],
-  declarations: [JobComponent, JobDetailComponent, JobUpdateComponent, JobDeleteDialogComponent, AddRequirementComponent],
+  declarations: [JobComponent, JobDetailComponent, JobUpdateComponent, JobDeleteDialogComponent],
   entryComponents: [JobDeleteDialogComponent]
 })
 export class OddJobsJobModule {}

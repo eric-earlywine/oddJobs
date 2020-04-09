@@ -43,13 +43,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_jobReqs">Job Requirements:</label>
-                    <ul id="field_jobReqs">
-                        <li *ngFor="let req of reqs">{{req}}</li>
+                    <label class="form-control-label" for="field_jobReq">Job Requirements:</label>
+                    <ul>
+                        <li *ngFor="let req of jobReqs">{{req}}</li>
                     </ul>
-                    <button type="button" id="add-req" class="btn btn-primary btn-sm" (click)="addReq()">
-                        <fa-icon icon="plus"></fa-icon><span>Add Requirement</span>
-                    </button>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" name="jobReq" id="field_jobReq"
+                               formControlName="jobReq"/>
+                        <button type="button" id="add-req" class="btn btn-primary btn-sm" (click)="addReq()">
+                            <fa-icon icon="plus"></fa-icon>Add Requirement
+                        </button>
+                    </div>
                 </div>
             </div>
 

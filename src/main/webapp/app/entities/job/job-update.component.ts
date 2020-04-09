@@ -24,6 +24,7 @@ export class JobUpdateComponent implements OnInit {
   isSaving = false;
   jobdetails: IJobDetails[] = [];
   newusers: INewUser[] = [];
+  jobReqs: string[] = [];
 
   editForm = this.fb.group({
     id: [],
@@ -31,7 +32,8 @@ export class JobUpdateComponent implements OnInit {
     payType: [],
     payAmt: [],
     jobDetails: [],
-    newUser: []
+    newUser: [],
+    jobReq: []
   });
 
   constructor(
@@ -81,8 +83,11 @@ export class JobUpdateComponent implements OnInit {
       jobDetails: job.jobDetails,
       newUser: job.newUser
     });
+    this.jobReqs = job.jobReqs ? job.jobReqs : [];
   }
-
+  addReq(): void {
+    this.jobReqs.push(this.editForm.get(['jobReq'])!.value);
+  }
   previousState(): void {
     window.history.back();
   }

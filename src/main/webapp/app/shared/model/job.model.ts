@@ -11,6 +11,7 @@ export interface IJob {
   jobDetails?: IJobDetails;
   locations?: ILocation[];
   newUser?: INewUser;
+  jobReqs?: string[];
 }
 
 export class Job implements IJob {
@@ -21,6 +22,7 @@ export class Job implements IJob {
     public payAmt?: number,
     public jobDetails?: IJobDetails,
     public locations?: ILocation[],
-    public newUser?: INewUser
+    public newUser?: INewUser,
+    public jobReqs?: string[]
   ) {}
 }

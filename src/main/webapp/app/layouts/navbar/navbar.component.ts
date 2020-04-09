@@ -48,7 +48,7 @@ export class NavbarComponent implements OnInit {
   }
   getUser(): string {
     if (this.isAuthenticated()) {
-      return this.accountService.userIdentity.login;
+      return this.accountService.getUsername();
     }
     return 'Account';
   }
