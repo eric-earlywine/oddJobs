@@ -1,12 +1,11 @@
-import { IJobDetails } from 'app/shared/model/job-details.model';
+import { IJob } from 'app/shared/model/job.model';
 
 export interface ITag {
   id?: number;
   tagName?: string;
-  description?: string;
-  jobDetails?: IJobDetails[];
+  jobs?: IJob[];
 }
 
 export class Tag implements ITag {
-  constructor(public id?: number, public tagName?: string, public description?: string, public jobDetails?: IJobDetails[]) {}
+  constructor(public id?: number, public tagName?: string, public jobs?: IJob[]) {}
 }

@@ -1,5 +1,6 @@
 package org.launchcode.oddjobs.web.rest;
 
+import org.checkerframework.checker.nullness.Opt;
 import org.launchcode.oddjobs.domain.Tag;
 import org.launchcode.oddjobs.repository.TagRepository;
 import org.launchcode.oddjobs.web.rest.errors.BadRequestAlertException;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,6 +103,16 @@ public class TagResource {
         log.debug("REST request to get Tag : {}", id);
         Optional<Tag> tag = tagRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(tag);
+    }
+
+    @GetMapping("/tags/tagName/{tagName}")
+    public ResponseEntity<Tag> getTagByName(@PathVariable String tagName) {
+        log.debug("REST request to get Tag by name : {}", tagName);
+        Optional<Tag> tag = tagRepository.findByTagName(tagName);
+        if (tag.isPresent()) {
+            return ResponseUtil.wrapOrNotFound(tag);
+        }
+        return null;
     }
 
     /**

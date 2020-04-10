@@ -2,6 +2,7 @@ import { IJobDetails } from 'app/shared/model/job-details.model';
 import { ILocation } from 'app/shared/model/location.model';
 import { INewUser } from 'app/shared/model/new-user.model';
 import { PayType } from 'app/shared/model/enumerations/pay-type.model';
+import { ITag } from 'app/shared/model/tag.model';
 
 export interface IJob {
   id?: number;
@@ -13,6 +14,8 @@ export interface IJob {
   locations?: ILocation[];
   newUser?: INewUser;
   jobReqs?: string[];
+  location?: string;
+  jobTags?: ITag[];
 }
 
 export class Job implements IJob {
@@ -25,6 +28,8 @@ export class Job implements IJob {
     public jobDesc?: string,
     public locations?: ILocation[],
     public newUser?: INewUser,
-    public jobReqs?: string[]
+    public jobReqs?: string[],
+    public location?: string,
+    public jobTags?: ITag[]
   ) {}
 }
