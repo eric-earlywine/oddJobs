@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared/util/request-util';
 import { ITag } from 'app/shared/model/tag.model';
+import { IRequirement } from 'app/shared/model/requirement.model';
 
 type EntityResponseType = HttpResponse<ITag>;
 type EntityArrayResponseType = HttpResponse<ITag[]>;
@@ -30,7 +31,9 @@ export class TagService {
   findByTagName(tag: string): Observable<EntityResponseType> {
     return this.http.get<ITag>(`${this.resourceUrl}/tagName/${tag}`, { observe: 'response' });
   }
-
+  findByJobId(id: number): Observable<EntityArrayResponseType> {
+    return this.http.get<ITag[]>(`${this.resourceUrl}/job/${id}`, { observe: 'response' });
+  }
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<ITag[]>(this.resourceUrl, { params: options, observe: 'response' });

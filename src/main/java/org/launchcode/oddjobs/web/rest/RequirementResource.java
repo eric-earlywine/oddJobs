@@ -107,7 +107,10 @@ public class RequirementResource {
     public ResponseEntity<Requirement[]> getRequirementsByJob(@PathVariable Long id) {
         log.debug("REST request to get Requirements by job ID : {}", id);
         Optional<Requirement[]> requirement = requirementRepository.findAllByJobId(id);
-        return ResponseUtil.wrapOrNotFound(requirement);
+        if (requirement.isPresent()) {
+            return ResponseUtil.wrapOrNotFound(requirement);
+        }
+        return null;
     }
 
     /**

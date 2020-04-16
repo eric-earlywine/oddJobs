@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import org.launchcode.oddjobs.domain.enumeration.PayType;
 import org.launchcode.oddjobs.repository.RequirementRepository;
@@ -41,11 +40,8 @@ public class Job implements Serializable {
     @Column(name = "job_location")
     private String jobLocation;
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private Set<Requirement> jobReqs = new HashSet<>();
-
-    @OneToMany(mappedBy = "job")
-    private Set<Location> locations = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties("jobs")
@@ -172,31 +168,6 @@ public class Job implements Serializable {
     }
     public void setJobLocation(String jobLocation) {
         this.jobLocation = jobLocation;
-    }
-
-    public Set<Location> getLocations() {
-        return locations;
-    }
-
-    public Job locations(Set<Location> locations) {
-        this.locations = locations;
-        return this;
-    }
-
-    public Job addLocation(Location location) {
-        this.locations.add(location);
-        location.setJob(this);
-        return this;
-    }
-
-    public Job removeLocation(Location location) {
-        this.locations.remove(location);
-        location.setJob(null);
-        return this;
-    }
-
-    public void setLocations(Set<Location> locations) {
-        this.locations = locations;
     }
 
     public NewUser getNewUser() {

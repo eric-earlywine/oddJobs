@@ -30,6 +30,7 @@ export class JobUpdateComponent implements OnInit {
   newusers: INewUser[] = [];
   jobReqs: IRequirement[] = [];
   jobTags: Tag[] = [];
+  newTags: Tag[] = [];
   job: IJob = new Job();
   editForm = this.fb.group({
     id: [],
@@ -53,7 +54,6 @@ export class JobUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ job }) => {
       this.updateForm(job);
-      this.newUserService.query().subscribe((res: HttpResponse<INewUser[]>) => (this.newusers = res.body || []));
       if (job.id !== undefined) {
         this.editing = true;
         this.requirementService
@@ -66,6 +66,18 @@ export class JobUpdateComponent implements OnInit {
           .subscribe((resBody: IRequirement[] | null) => {
             if (resBody != null) {
               this.jobReqs = resBody;
+            }
+          });
+        this.tagService
+          .findByJobId(job.id)
+          .pipe(
+            map((res: HttpResponse<ITag[]>) => {
+              return res.body;
+            })
+          )
+          .subscribe((resBody: ITag[] | null) => {
+            if (resBody != null) {
+              this.jobTags = resBody;
             }
           });
       }
@@ -96,15 +108,12 @@ export class JobUpdateComponent implements OnInit {
       }
       if (this.reqExists === false) {
         const newReq = this.formatReq(this.editForm.get(['jobReq'])!.value);
-        this.createReq(newReq);
+        this.jobReqs.push(newReq);
       }
       this.editForm.patchValue({
         jobReq: ''
       });
     }
-  }
-  createReq(req: IRequirement): void {
-    this.subscribeToReqResponse(this.requirementService.create(req));
   }
   formatReq(req: string): IRequirement {
     return {
@@ -116,9 +125,6 @@ export class JobUpdateComponent implements OnInit {
   }
   remReq(req: IRequirement): void {
     this.jobReqs.splice(this.jobReqs.indexOf(req), 1);
-    if (req.id !== undefined) {
-      this.subscribeToReqResponse(this.requirementService.delete(req.id));
-    }
   }
   clearReq(): void {
     this.jobReqs = [];
@@ -140,10 +146,10 @@ export class JobUpdateComponent implements OnInit {
               if (resBody != null) {
                 this.addTag(resBody);
               } else {
-                this.createTag(tagString);
+                this.addTag(this.formatTag(tagString));
               }
             },
-            () => this.createTag(tagString)
+            () => this.addTag(this.formatTag(tagString))
           );
       }
     }
@@ -153,10 +159,6 @@ export class JobUpdateComponent implements OnInit {
     this.editForm.patchValue({
       jobTag: ''
     });
-  }
-  createTag(tag: string): void {
-    const newTag = this.formatTag(tag);
-    this.subscribeToTagResponse(this.tagService.create(newTag));
   }
   remTag(tag: Tag): void {
     this.jobTags.splice(this.jobTags.indexOf(tag), 1);
@@ -205,7 +207,7 @@ export class JobUpdateComponent implements OnInit {
       .subscribe(
         (resBody: IJob | null) => {
           if (resBody != null) {
-            this.onSaveSuccess(resBody);
+            this.onSaveSuccess();
           } else {
             this.onSaveError();
           }
@@ -213,58 +215,13 @@ export class JobUpdateComponent implements OnInit {
         () => this.onSaveError()
       );
   }
-  protected subscribeToTagResponse(result: Observable<HttpResponse<ITag>>): void {
-    result.subscribe(
-      () => {
-        this.onTagSuccess();
-        this.checkForTag();
-      },
-      () => this.onTagError()
-    );
-  }
-  protected subscribeToReqResponse(result: Observable<HttpResponse<IRequirement>>): void {
-    result
-      .pipe(
-        map((res: HttpResponse<IRequirement>) => {
-          return res.body;
-        })
-      )
-      .subscribe(
-        (resBody: IRequirement | null) => {
-          if (resBody != null) {
-            this.jobReqs.push(resBody);
-          }
-        },
-        () => this.onReqFail()
-      );
-  }
-  updateReqsWithJobId(job: IJob): void {
-    for (let i = 0; i < this.jobReqs.length; i++) {
-      this.jobReqs[i].job = job;
-      this.subscribeToReqResponse(this.requirementService.update(this.jobReqs[i]));
-    }
-  }
-  protected onSaveSuccess(job: IJob): void {
+  protected onSaveSuccess(): void {
     this.isSaving = false;
-    this.updateReqsWithJobId(job);
     this.previousState();
   }
 
   protected onSaveError(): void {
     this.isSaving = false;
-  }
-
-  protected onTagSuccess(): void {
-    this.isMakingTag = false;
-  }
-
-  protected onTagError(): void {
-    this.isMakingTag = false;
-  }
-  protected onReqFail(): void {
-    this.editForm.patchValue({
-      jobReq: 'Failed'
-    });
   }
 
   trackById(index: number, item: SelectableEntity): any {

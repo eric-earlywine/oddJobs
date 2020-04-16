@@ -1,6 +1,7 @@
 package org.launchcode.oddjobs.web.rest;
 
 import org.checkerframework.checker.nullness.Opt;
+import org.launchcode.oddjobs.domain.Requirement;
 import org.launchcode.oddjobs.domain.Tag;
 import org.launchcode.oddjobs.repository.TagRepository;
 import org.launchcode.oddjobs.web.rest.errors.BadRequestAlertException;
@@ -111,6 +112,15 @@ public class TagResource {
         Optional<Tag> tag = tagRepository.findByTagName(tagName);
         if (tag.isPresent()) {
             return ResponseUtil.wrapOrNotFound(tag);
+        }
+        return null;
+    }
+    @GetMapping("/tags/job/{id}")
+    public ResponseEntity<Tag[]> getTagsByJob(@PathVariable Long id) {
+        log.debug("REST request to get Tags by job ID : {}", id);
+        Optional<Tag[]> tags = tagRepository.findAllByJobId(id);
+        if (tags.isPresent()) {
+            return ResponseUtil.wrapOrNotFound(tags);
         }
         return null;
     }

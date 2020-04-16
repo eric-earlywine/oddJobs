@@ -16,11 +16,15 @@ export class JobService {
   constructor(protected http: HttpClient) {}
 
   create(job: IJob): Observable<EntityResponseType> {
-    return this.http.post<IJob>(this.resourceUrl, job, { observe: 'response' });
+    const dataInfo = [];
+    dataInfo.push({ job, jobReqs: job.jobReqs, tags: job.jobTags });
+    return this.http.post(this.resourceUrl, dataInfo, { observe: 'response' });
   }
 
   update(job: IJob): Observable<EntityResponseType> {
-    return this.http.put<IJob>(this.resourceUrl, job, { observe: 'response' });
+    const dataInfo = [];
+    dataInfo.push({ job, jobReqs: job.jobReqs, tags: job.jobTags });
+    return this.http.put(this.resourceUrl, dataInfo, { observe: 'response' });
   }
 
   find(id: number): Observable<EntityResponseType> {
