@@ -28,8 +28,8 @@
             <column name="job_desc" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="job_details_id" type="bigint">
-                <constraints unique="true" nullable="true" uniqueConstraintName="ux_job_job_details_id" />
+            <column name="job_location" type="varchar(255)">
+                <constraints nullable="true" />
             </column>
             <column name="new_user_id" type="bigint">
                 <constraints nullable="true" />
@@ -40,6 +40,17 @@
 
     <changeSet id="20200313053800-1-relations" author="jhipster">
 
+        <createTable tableName="job_tag">
+            <column name="tag_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="job_id, tag_id" tableName="job_tag"/>
+        
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 
@@ -60,6 +71,8 @@
             <column name="job_name" type="string"/>
             <column name="pay_type" type="string"/>
             <column name="pay_amt" type="numeric"/>
+            <column name="job_desc" type="string"/>
+            <column name="job_location" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here, do not remove-->
         </loadData>
     </changeSet>

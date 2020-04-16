@@ -1,15 +1,15 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { JobDetailsService } from 'app/entities/job-details/job-details.service';
-import { IJobDetails, JobDetails } from 'app/shared/model/job-details.model';
+import { RequirementService } from 'app/entities/requirement/requirement.service';
+import { IRequirement, Requirement } from 'app/shared/model/requirement.model';
 
 describe('Service Tests', () => {
-  describe('JobDetails Service', () => {
+  describe('Requirement Service', () => {
     let injector: TestBed;
-    let service: JobDetailsService;
+    let service: RequirementService;
     let httpMock: HttpTestingController;
-    let elemDefault: IJobDetails;
-    let expectedResult: IJobDetails | IJobDetails[] | boolean | null;
+    let elemDefault: IRequirement;
+    let expectedResult: IRequirement | IRequirement[] | boolean | null;
 
     beforeEach(() => {
       TestBed.configureTestingModule({
@@ -17,10 +17,10 @@ describe('Service Tests', () => {
       });
       expectedResult = null;
       injector = getTestBed();
-      service = injector.get(JobDetailsService);
+      service = injector.get(RequirementService);
       httpMock = injector.get(HttpTestingController);
 
-      elemDefault = new JobDetails(0, 'AAAAAAA', 'AAAAAAA');
+      elemDefault = new Requirement(0, 'AAAAAAA');
     });
 
     describe('Service methods', () => {
@@ -34,7 +34,7 @@ describe('Service Tests', () => {
         expect(expectedResult).toMatchObject(elemDefault);
       });
 
-      it('should create a JobDetails', () => {
+      it('should create a Requirement', () => {
         const returnedFromService = Object.assign(
           {
             id: 0
@@ -44,18 +44,17 @@ describe('Service Tests', () => {
 
         const expected = Object.assign({}, returnedFromService);
 
-        service.create(new JobDetails()).subscribe(resp => (expectedResult = resp.body));
+        service.create(new Requirement()).subscribe(resp => (expectedResult = resp.body));
 
         const req = httpMock.expectOne({ method: 'POST' });
         req.flush(returnedFromService);
         expect(expectedResult).toMatchObject(expected);
       });
 
-      it('should update a JobDetails', () => {
+      it('should update a Requirement', () => {
         const returnedFromService = Object.assign(
           {
-            difficulty: 'BBBBBB',
-            description: 'BBBBBB'
+            requirementName: 'BBBBBB'
           },
           elemDefault
         );
@@ -69,11 +68,10 @@ describe('Service Tests', () => {
         expect(expectedResult).toMatchObject(expected);
       });
 
-      it('should return a list of JobDetails', () => {
+      it('should return a list of Requirement', () => {
         const returnedFromService = Object.assign(
           {
-            difficulty: 'BBBBBB',
-            description: 'BBBBBB'
+            requirementName: 'BBBBBB'
           },
           elemDefault
         );
@@ -88,7 +86,7 @@ describe('Service Tests', () => {
         expect(expectedResult).toContainEqual(expected);
       });
 
-      it('should delete a JobDetails', () => {
+      it('should delete a Requirement', () => {
         service.delete(123).subscribe(resp => (expectedResult = resp.ok));
 
         const req = httpMock.expectOne({ method: 'DELETE' });

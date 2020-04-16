@@ -6,27 +6,27 @@ import { JhiEventManager } from 'ng-jhipster';
 import { OddJobsTestModule } from '../../../test.module';
 import { MockEventManager } from '../../../helpers/mock-event-manager.service';
 import { MockActiveModal } from '../../../helpers/mock-active-modal.service';
-import { JobDetailsDeleteDialogComponent } from 'app/entities/job-details/job-details-delete-dialog.component';
-import { JobDetailsService } from 'app/entities/job-details/job-details.service';
+import { RequirementDeleteDialogComponent } from 'app/entities/requirement/requirement-delete-dialog.component';
+import { RequirementService } from 'app/entities/requirement/requirement.service';
 
 describe('Component Tests', () => {
-  describe('JobDetails Management Delete Component', () => {
-    let comp: JobDetailsDeleteDialogComponent;
-    let fixture: ComponentFixture<JobDetailsDeleteDialogComponent>;
-    let service: JobDetailsService;
+  describe('Requirement Management Delete Component', () => {
+    let comp: RequirementDeleteDialogComponent;
+    let fixture: ComponentFixture<RequirementDeleteDialogComponent>;
+    let service: RequirementService;
     let mockEventManager: MockEventManager;
     let mockActiveModal: MockActiveModal;
 
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [OddJobsTestModule],
-        declarations: [JobDetailsDeleteDialogComponent]
+        declarations: [RequirementDeleteDialogComponent]
       })
-        .overrideTemplate(JobDetailsDeleteDialogComponent, '')
+        .overrideTemplate(RequirementDeleteDialogComponent, '')
         .compileComponents();
-      fixture = TestBed.createComponent(JobDetailsDeleteDialogComponent);
+      fixture = TestBed.createComponent(RequirementDeleteDialogComponent);
       comp = fixture.componentInstance;
-      service = fixture.debugElement.injector.get(JobDetailsService);
+      service = fixture.debugElement.injector.get(RequirementService);
       mockEventManager = TestBed.get(JhiEventManager);
       mockActiveModal = TestBed.get(NgbActiveModal);
     });

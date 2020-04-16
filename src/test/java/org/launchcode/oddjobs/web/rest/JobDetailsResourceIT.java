@@ -7,12 +7,9 @@ import org.launchcode.oddjobs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,13 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.launchcode.oddjobs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,17 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = OddJobsApp.class)
 public class JobDetailsResourceIT {
 
-    private static final String DEFAULT_DIFFICULTY = "AAAAAAAAAA";
-    private static final String UPDATED_DIFFICULTY = "BBBBBBBBBB";
-
-    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
-    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
-
     @Autowired
     private JobDetailsRepository jobDetailsRepository;
-
-    @Mock
-    private JobDetailsRepository jobDetailsRepositoryMock;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -88,9 +74,7 @@ public class JobDetailsResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static JobDetails createEntity(EntityManager em) {
-        JobDetails jobDetails = new JobDetails()
-            .difficulty(DEFAULT_DIFFICULTY)
-            .description(DEFAULT_DESCRIPTION);
+        JobDetails jobDetails = new JobDetails();
         return jobDetails;
     }
     /**
@@ -100,9 +84,7 @@ public class JobDetailsResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static JobDetails createUpdatedEntity(EntityManager em) {
-        JobDetails jobDetails = new JobDetails()
-            .difficulty(UPDATED_DIFFICULTY)
-            .description(UPDATED_DESCRIPTION);
+        JobDetails jobDetails = new JobDetails();
         return jobDetails;
     }
 
@@ -126,8 +108,6 @@ public class JobDetailsResourceIT {
         List<JobDetails> jobDetailsList = jobDetailsRepository.findAll();
         assertThat(jobDetailsList).hasSize(databaseSizeBeforeCreate + 1);
         JobDetails testJobDetails = jobDetailsList.get(jobDetailsList.size() - 1);
-        assertThat(testJobDetails.getDifficulty()).isEqualTo(DEFAULT_DIFFICULTY);
-        assertThat(testJobDetails.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
     }
 
     @Test
@@ -160,44 +140,9 @@ public class JobDetailsResourceIT {
         restJobDetailsMockMvc.perform(get("/api/job-details?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(jobDetails.getId().intValue())))
-            .andExpect(jsonPath("$.[*].difficulty").value(hasItem(DEFAULT_DIFFICULTY)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(jobDetails.getId().intValue())));
     }
     
-    @SuppressWarnings({"unchecked"})
-    public void getAllJobDetailsWithEagerRelationshipsIsEnabled() throws Exception {
-        JobDetailsResource jobDetailsResource = new JobDetailsResource(jobDetailsRepositoryMock);
-        when(jobDetailsRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        MockMvc restJobDetailsMockMvc = MockMvcBuilders.standaloneSetup(jobDetailsResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restJobDetailsMockMvc.perform(get("/api/job-details?eagerload=true"))
-        .andExpect(status().isOk());
-
-        verify(jobDetailsRepositoryMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void getAllJobDetailsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        JobDetailsResource jobDetailsResource = new JobDetailsResource(jobDetailsRepositoryMock);
-            when(jobDetailsRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-            MockMvc restJobDetailsMockMvc = MockMvcBuilders.standaloneSetup(jobDetailsResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restJobDetailsMockMvc.perform(get("/api/job-details?eagerload=true"))
-        .andExpect(status().isOk());
-
-            verify(jobDetailsRepositoryMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
     @Test
     @Transactional
     public void getJobDetails() throws Exception {
@@ -208,9 +153,7 @@ public class JobDetailsResourceIT {
         restJobDetailsMockMvc.perform(get("/api/job-details/{id}", jobDetails.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(jobDetails.getId().intValue()))
-            .andExpect(jsonPath("$.difficulty").value(DEFAULT_DIFFICULTY))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
+            .andExpect(jsonPath("$.id").value(jobDetails.getId().intValue()));
     }
 
     @Test
@@ -233,9 +176,6 @@ public class JobDetailsResourceIT {
         JobDetails updatedJobDetails = jobDetailsRepository.findById(jobDetails.getId()).get();
         // Disconnect from session so that the updates on updatedJobDetails are not directly saved in db
         em.detach(updatedJobDetails);
-        updatedJobDetails
-            .difficulty(UPDATED_DIFFICULTY)
-            .description(UPDATED_DESCRIPTION);
 
         restJobDetailsMockMvc.perform(put("/api/job-details")
             .contentType(TestUtil.APPLICATION_JSON)
@@ -246,8 +186,6 @@ public class JobDetailsResourceIT {
         List<JobDetails> jobDetailsList = jobDetailsRepository.findAll();
         assertThat(jobDetailsList).hasSize(databaseSizeBeforeUpdate);
         JobDetails testJobDetails = jobDetailsList.get(jobDetailsList.size() - 1);
-        assertThat(testJobDetails.getDifficulty()).isEqualTo(UPDATED_DIFFICULTY);
-        assertThat(testJobDetails.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
     }
 
     @Test

@@ -1,26 +1,22 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <div *ngIf="jobDetails">
-            <h2><span>Job Details</span> {{ jobDetails.id }}</h2>
+        <div *ngIf="requirement">
+            <h2><span>Requirement</span> {{ requirement.id }}</h2>
 
             <hr>
 
             <jhi-alert-error></jhi-alert-error>
 
             <dl class="row-md jh-entity-details">
-                <dt><span>Difficulty</span></dt>
+                <dt><span>Requirement Name</span></dt>
                 <dd>
-                    <span>{{ jobDetails.difficulty }}</span>
+                    <span>{{ requirement.requirementName }}</span>
                 </dd>
-                <dt><span>Description</span></dt>
+                <dt><span>Job</span></dt>
                 <dd>
-                    <span>{{ jobDetails.description }}</span>
-                </dd>
-                <dt><span>Tag</span></dt>
-                <dd>
-                    <span *ngFor="let tag of jobDetails.tags; let last = last">
-                        <a [routerLink]="['/tag', tag?.id, 'view']">{{ tag.id }}</a>{{ last ? '' : ', ' }}
-                    </span>
+                    <div *ngIf="requirement.job">
+                        <a [routerLink]="['/job', requirement.job?.id, 'view']">{{ requirement.job?.id }}</a>
+                    </div>
                 </dd>
             </dl>
 
@@ -31,7 +27,7 @@
             </button>
 
             <button type="button"
-                    [routerLink]="['/job-details', jobDetails.id, 'edit']"
+                    [routerLink]="['/requirement', requirement.id, 'edit']"
                     class="btn btn-primary">
                 <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
             </button>

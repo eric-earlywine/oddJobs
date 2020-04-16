@@ -24,12 +24,10 @@ public class Tag implements Serializable {
     @Column(name = "tag_name")
     private String tagName;
 
-    @Column(name = "description")
-    private String description;
 
     @ManyToMany(mappedBy = "tags")
     @JsonIgnore
-    private Set<JobDetails> jobDetails = new HashSet<>();
+    private Set<Job> job = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -53,42 +51,30 @@ public class Tag implements Serializable {
         this.tagName = tagName;
     }
 
-    public String getDescription() {
-        return description;
+
+    public Set<Job> getJob() {
+        return job;
     }
 
-    public Tag description(String description) {
-        this.description = description;
+    public Tag job(Set<Job> job) {
+        this.job = job;
         return this;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<JobDetails> getJobDetails() {
-        return jobDetails;
-    }
-
-    public Tag jobDetails(Set<JobDetails> jobDetails) {
-        this.jobDetails = jobDetails;
+    public Tag addJob(Job job) {
+        this.job.add(job);
+        job.getTags().add(this);
         return this;
     }
 
-    public Tag addJobDetails(JobDetails jobDetails) {
-        this.jobDetails.add(jobDetails);
-        jobDetails.getTags().add(this);
+    public Tag removeJob(Job job) {
+        this.job.remove(job);
+        job.getTags().remove(this);
         return this;
     }
 
-    public Tag removeJobDetails(JobDetails jobDetails) {
-        this.jobDetails.remove(jobDetails);
-        jobDetails.getTags().remove(this);
-        return this;
-    }
-
-    public void setJobDetails(Set<JobDetails> jobDetails) {
-        this.jobDetails = jobDetails;
+    public void setJob(Set<Job> job) {
+        this.job = job;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -113,7 +99,6 @@ public class Tag implements Serializable {
         return "Tag{" +
             "id=" + getId() +
             ", tagName='" + getTagName() + "'" +
-            ", description='" + getDescription() + "'" +
             "}";
     }
 }

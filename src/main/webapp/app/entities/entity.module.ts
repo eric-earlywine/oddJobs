@@ -17,16 +17,16 @@ import { RouterModule } from '@angular/router';
         loadChildren: () => import('./location/location.module').then(m => m.OddJobsLocationModule)
       },
       {
-        path: 'job-details',
-        loadChildren: () => import('./job-details/job-details.module').then(m => m.OddJobsJobDetailsModule)
-      },
-      {
         path: 'user-details',
         loadChildren: () => import('./user-details/user-details.module').then(m => m.OddJobsUserDetailsModule)
       },
       {
         path: 'tag',
         loadChildren: () => import('./tag/tag.module').then(m => m.OddJobsTagModule)
+      },
+      {
+        path: 'requirement',
+        loadChildren: () => import('./requirement/requirement.module').then(m => m.OddJobsRequirementModule)
       }
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ])

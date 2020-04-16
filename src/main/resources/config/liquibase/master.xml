@@ -20,10 +20,12 @@
     <include file="config/liquibase/changelog/20200313054100_added_entity_JobDetails.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200313054200_added_entity_UserDetails.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200313054300_added_entity_Tag.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200313054000_added_entity_Requirement.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20200313053800_added_entity_constraints_Job.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200313053900_added_entity_constraints_NewUser.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200313054000_added_entity_constraints_Location.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200313054100_added_entity_constraints_JobDetails.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200313054000_added_entity_constraints_Requirement.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

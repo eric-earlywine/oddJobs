@@ -1,0 +1,28 @@
+{
+    "name": "Requirement",
+    "fields": [
+        {
+            "fieldName": "requirementName",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "job",
+            "otherEntityRelationshipName": "requirement",
+            "relationshipName": "job",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20200313054000",
+    "entityTableName": "requirement",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

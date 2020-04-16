@@ -8,7 +8,6 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access-service'
 import { IJob, Job } from 'app/shared/model/job.model';
 import { JobService } from './job.service';
 import { JobComponent } from './job.component';
-import { JobDetailComponent } from './job-detail.component';
 import { JobUpdateComponent } from './job-update.component';
 
 @Injectable({ providedIn: 'root' })
@@ -37,18 +36,6 @@ export const jobRoute: Routes = [
   {
     path: '',
     component: JobComponent,
-    data: {
-      authorities: ['ROLE_USER'],
-      pageTitle: 'Jobs'
-    },
-    canActivate: [UserRouteAccessService]
-  },
-  {
-    path: ':id/view',
-    component: JobDetailComponent,
-    resolve: {
-      job: JobResolve
-    },
     data: {
       authorities: ['ROLE_USER'],
       pageTitle: 'Jobs'

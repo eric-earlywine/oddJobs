@@ -17,8 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * REST controller for managing {@link org.launchcode.oddjobs.domain.JobDetails}.
@@ -84,21 +82,12 @@ public class JobDetailsResource {
     /**
      * {@code GET  /job-details} : get all the jobDetails.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
-     * @param filter the filter of the request.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of jobDetails in body.
      */
     @GetMapping("/job-details")
-    public List<JobDetails> getAllJobDetails(@RequestParam(required = false) String filter,@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
-        if ("job-is-null".equals(filter)) {
-            log.debug("REST request to get all JobDetailss where job is null");
-            return StreamSupport
-                .stream(jobDetailsRepository.findAll().spliterator(), false)
-                .filter(jobDetails -> jobDetails.getJob() == null)
-                .collect(Collectors.toList());
-        }
+    public List<JobDetails> getAllJobDetails() {
         log.debug("REST request to get all JobDetails");
-        return jobDetailsRepository.findAllWithEagerRelationships();
+        return jobDetailsRepository.findAll();
     }
 
     /**
@@ -110,7 +99,7 @@ public class JobDetailsResource {
     @GetMapping("/job-details/{id}")
     public ResponseEntity<JobDetails> getJobDetails(@PathVariable Long id) {
         log.debug("REST request to get JobDetails : {}", id);
-        Optional<JobDetails> jobDetails = jobDetailsRepository.findOneWithEagerRelationships(id);
+        Optional<JobDetails> jobDetails = jobDetailsRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(jobDetails);
     }
 

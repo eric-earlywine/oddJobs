@@ -19,9 +19,6 @@
             <column name="tag_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="description" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
     </changeSet>
@@ -46,7 +43,6 @@
                   tableName="tag">
             <column name="id" type="numeric"/>
             <column name="tag_name" type="string"/>
-            <column name="description" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here, do not remove-->
         </loadData>
     </changeSet>

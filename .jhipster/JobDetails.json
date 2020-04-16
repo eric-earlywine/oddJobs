@@ -1,32 +1,7 @@
 {
     "name": "JobDetails",
-    "fields": [
-        {
-            "fieldName": "difficulty",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "description",
-            "fieldType": "String"
-        }
-    ],
-    "relationships": [
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityName": "tag",
-            "otherEntityRelationshipName": "jobDetails",
-            "relationshipName": "tag",
-            "otherEntityField": "id",
-            "ownerSide": true
-        },
-        {
-            "relationshipType": "one-to-one",
-            "otherEntityName": "job",
-            "otherEntityRelationshipName": "jobDetails",
-            "relationshipName": "job",
-            "ownerSide": false
-        }
-    ],
+    "fields": [],
+    "relationships": [],
     "changelogDate": "20200313054100",
     "entityTableName": "job_details",
     "dto": "no",
@@ -36,5 +11,7 @@
     "fluentMethods": true,
     "readOnly": false,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": "*",
+    "searchEngine": false,
+    "databaseType": "sql"
 }

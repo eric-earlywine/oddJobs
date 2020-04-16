@@ -13,17 +13,17 @@
         {
             "fieldName": "payAmt",
             "fieldType": "Integer"
-        }
+        },
+      {
+        "fieldName": "jobDesc",
+        "fieldType": "String"
+      },
+      {
+        "fieldName": "jobLocation",
+        "fieldType": "String"
+      }
     ],
     "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "otherEntityName": "jobDetails",
-            "otherEntityRelationshipName": "job",
-            "relationshipName": "jobDetails",
-            "otherEntityField": "id",
-            "ownerSide": true
-        },
         {
             "relationshipType": "one-to-many",
             "otherEntityName": "location",
@@ -36,7 +36,21 @@
             "otherEntityRelationshipName": "job",
             "relationshipName": "newUser",
             "otherEntityField": "id"
-        }
+        },
+      {
+        "relationshipType": "one-to-many",
+        "otherEntityName": "requirement",
+        "otherEntityRelationshipName": "job",
+        "relationshipName": "requirement"
+      },
+      {
+        "relationshipType": "many-to-many",
+        "otherEntityName": "tag",
+        "otherEntityRelationshipName": "job",
+        "relationshipName": "tag",
+        "otherEntityField": "id",
+        "ownerSide": true
+      }
     ],
     "changelogDate": "20200313053800",
     "entityTableName": "job",

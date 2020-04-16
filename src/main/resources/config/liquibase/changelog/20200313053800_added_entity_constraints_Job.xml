@@ -8,17 +8,23 @@
     -->
     <changeSet id="20200313053800-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="job_details_id"
-                                 baseTableName="job"
-                                 constraintName="fk_job_job_details_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="job_details"/>
-
         <addForeignKeyConstraint baseColumnNames="new_user_id"
                                  baseTableName="job"
                                  constraintName="fk_job_new_user_id"
                                  referencedColumnNames="id"
                                  referencedTableName="new_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="job_id"
+                                 baseTableName="job_tag"
+                                 constraintName="fk_job_tag_job_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="job"/>
+
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="job_tag"
+                                 constraintName="fk_job_tag_tag_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"/>
+        
     </changeSet>
 </databaseChangeLog>

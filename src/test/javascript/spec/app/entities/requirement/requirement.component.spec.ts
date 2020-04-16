@@ -3,27 +3,27 @@ import { of } from 'rxjs';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { OddJobsTestModule } from '../../../test.module';
-import { JobDetailsComponent } from 'app/entities/job-details/job-details.component';
-import { JobDetailsService } from 'app/entities/job-details/job-details.service';
-import { JobDetails } from 'app/shared/model/job-details.model';
+import { RequirementComponent } from 'app/entities/requirement/requirement.component';
+import { RequirementService } from 'app/entities/requirement/requirement.service';
+import { Requirement } from 'app/shared/model/requirement.model';
 
 describe('Component Tests', () => {
-  describe('JobDetails Management Component', () => {
-    let comp: JobDetailsComponent;
-    let fixture: ComponentFixture<JobDetailsComponent>;
-    let service: JobDetailsService;
+  describe('Requirement Management Component', () => {
+    let comp: RequirementComponent;
+    let fixture: ComponentFixture<RequirementComponent>;
+    let service: RequirementService;
 
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [OddJobsTestModule],
-        declarations: [JobDetailsComponent]
+        declarations: [RequirementComponent]
       })
-        .overrideTemplate(JobDetailsComponent, '')
+        .overrideTemplate(RequirementComponent, '')
         .compileComponents();
 
-      fixture = TestBed.createComponent(JobDetailsComponent);
+      fixture = TestBed.createComponent(RequirementComponent);
       comp = fixture.componentInstance;
-      service = fixture.debugElement.injector.get(JobDetailsService);
+      service = fixture.debugElement.injector.get(RequirementService);
     });
 
     it('Should call load all on init', () => {
@@ -32,7 +32,7 @@ describe('Component Tests', () => {
       spyOn(service, 'query').and.returnValue(
         of(
           new HttpResponse({
-            body: [new JobDetails(123)],
+            body: [new Requirement(123)],
             headers
           })
         )
@@ -43,7 +43,7 @@ describe('Component Tests', () => {
 
       // THEN
       expect(service.query).toHaveBeenCalled();
-      expect(comp.jobDetails && comp.jobDetails[0]).toEqual(jasmine.objectContaining({ id: 123 }));
+      expect(comp.requirements && comp.requirements[0]).toEqual(jasmine.objectContaining({ id: 123 }));
     });
   });
 });

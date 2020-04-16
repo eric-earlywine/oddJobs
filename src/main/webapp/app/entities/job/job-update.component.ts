@@ -9,15 +9,13 @@ import { map } from 'rxjs/operators';
 import { IJob, Job } from 'app/shared/model/job.model';
 import { JobService } from './job.service';
 import { TagService } from 'app/entities/tag/tag.service';
-import { IJobDetails } from 'app/shared/model/job-details.model';
 import { ITag, Tag } from 'app/shared/model/tag.model';
 import { IRequirement, Requirement } from 'app/shared/model/requirement.model';
-import { JobDetailsService } from 'app/entities/job-details/job-details.service';
 import { INewUser } from 'app/shared/model/new-user.model';
 import { NewUserService } from 'app/entities/new-user/new-user.service';
 import { RequirementService } from 'app/entities/requirement/requirement.service';
 
-type SelectableEntity = IJobDetails | INewUser;
+type SelectableEntity = INewUser;
 
 @Component({
   selector: 'jhi-job-update',
@@ -28,7 +26,6 @@ export class JobUpdateComponent implements OnInit {
   isSaving = false;
   isMakingTag = false;
   reqExists = false;
-  jobdetails: IJobDetails[] = [];
   newusers: INewUser[] = [];
   jobReqs: IRequirement[] = [];
   jobTags: Tag[] = [];
@@ -44,7 +41,6 @@ export class JobUpdateComponent implements OnInit {
   });
   constructor(
     protected jobService: JobService,
-    protected jobDetailsService: JobDetailsService,
     protected newUserService: NewUserService,
     protected activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -55,29 +51,6 @@ export class JobUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ job }) => {
       this.updateForm(job);
-
-      this.jobDetailsService
-        .query({ filter: 'job-is-null' })
-        .pipe(
-          map((res: HttpResponse<IJobDetails[]>) => {
-            return res.body || [];
-          })
-        )
-        .subscribe((resBody: IJobDetails[]) => {
-          if (!job.jobDetails || !job.jobDetails.id) {
-            this.jobdetails = resBody;
-          } else {
-            this.jobDetailsService
-              .find(job.jobDetails.id)
-              .pipe(
-                map((subRes: HttpResponse<IJobDetails>) => {
-                  return subRes.body ? [subRes.body].concat(resBody) : resBody;
-                })
-              )
-              .subscribe((concatRes: IJobDetails[]) => (this.jobdetails = concatRes));
-          }
-        });
-
       this.newUserService.query().subscribe((res: HttpResponse<INewUser[]>) => (this.newusers = res.body || []));
     });
   }
@@ -89,7 +62,7 @@ export class JobUpdateComponent implements OnInit {
       payType: job.payType,
       payAmt: job.payAmt,
       jobDesc: job.jobDesc,
-      jobLocation: job.location
+      jobLocation: job.jobLocation
     });
     this.jobReqs = job.jobReqs ? job.jobReqs : [];
     this.jobTags = job.jobTags ? job.jobTags : [];
@@ -189,7 +162,7 @@ export class JobUpdateComponent implements OnInit {
       payAmt: this.editForm.get(['payAmt'])!.value,
       jobDesc: this.editForm.get(['jobDesc'])!.value,
       jobReqs: this.jobReqs,
-      location: this.editForm.get(['jobLocation'])!.value,
+      jobLocation: this.editForm.get(['jobLocation'])!.value,
       jobTags: this.jobTags
     };
   }

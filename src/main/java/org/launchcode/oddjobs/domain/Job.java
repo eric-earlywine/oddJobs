@@ -35,10 +35,6 @@ public class Job implements Serializable {
     @Column(name = "pay_amt")
     private Integer payAmt;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private JobDetails jobDetails;
-
     @Column(name = "job_desc")
     private String jobDesc;
 
@@ -54,6 +50,13 @@ public class Job implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("jobs")
     private NewUser newUser;
+
+    @ManyToMany
+    @JoinTable(name = "job_tag",
+        joinColumns = @JoinColumn(name = "job_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
+    private Set<Tag> tags = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -101,18 +104,29 @@ public class Job implements Serializable {
     public void setPayAmt(Integer payAmt) {
         this.payAmt = payAmt;
     }
-
-    public JobDetails getJobDetails() {
-        return jobDetails;
+    public Set<Tag> getTags() {
+        return tags;
     }
 
-    public Job jobDetails(JobDetails jobDetails) {
-        this.jobDetails = jobDetails;
+    public Job tags(Set<Tag> tags) {
+        this.tags = tags;
         return this;
     }
 
-    public void setJobDetails(JobDetails jobDetails) {
-        this.jobDetails = jobDetails;
+    public Job addTag(Tag tag) {
+        this.tags.add(tag);
+        tag.getJob().add(this);
+        return this;
+    }
+
+    public Job removeTag(Tag tag) {
+        this.tags.remove(tag);
+        tag.getJob().remove(this);
+        return this;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
     public Set<Requirement> getRequirements() {
         return this.jobReqs;
@@ -137,6 +151,27 @@ public class Job implements Serializable {
 
     public void setRequirements(Set<Requirement> jobReqs) {
         this.jobReqs = jobReqs;
+    }
+
+    public String getJobDesc() {
+        return jobDesc;
+    }
+    public Job jobDesc(String jobDesc) {
+        this.jobDesc = jobDesc;
+        return this;
+    }
+    public void setJobDesc(String jobDesc) {
+        this.jobDesc = jobDesc;
+    }
+    public String getJobLocation() {
+        return jobLocation;
+    }
+    public Job jobLocation(String jobLocation) {
+        this.jobLocation = jobLocation;
+        return this;
+    }
+    public void setJobLocation(String jobLocation) {
+        this.jobLocation = jobLocation;
     }
 
     public Set<Location> getLocations() {

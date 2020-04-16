@@ -1,4 +1,4 @@
-<form *ngIf="jobDetails" name="deleteForm" (ngSubmit)="confirmDelete(jobDetails.id!)">
+<form *ngIf="requirement" name="deleteForm" (ngSubmit)="confirmDelete(requirement.id!)">
     <div class="modal-header">
         <h4 class="modal-title">Confirm delete operation</h4>
 
@@ -9,7 +9,7 @@
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
 
-        <p id="jhi-delete-jobDetails-heading">Are you sure you want to delete this Job Details?</p>
+        <p id="jhi-delete-requirement-heading">Are you sure you want to delete this Requirement?</p>
     </div>
 
     <div class="modal-footer">
@@ -17,7 +17,7 @@
             <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
         </button>
 
-        <button id="jhi-confirm-delete-jobDetails" type="submit" class="btn btn-danger">
+        <button id="jhi-confirm-delete-requirement" type="submit" class="btn btn-danger">
             <fa-icon icon="times"></fa-icon>&nbsp;<span>Delete</span>
         </button>
     </div>
