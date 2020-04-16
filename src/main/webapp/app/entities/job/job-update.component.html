@@ -105,7 +105,7 @@
                 <div class="form-group">
                     <label class="form-control-label" for="jobReq">Job Requirements:</label>
                     <ul>
-                        <li *ngFor="let req of jobReqs">{{req}}
+                        <li *ngFor="let req of jobReqs">{{req.requirementName}}
                         <button type="button" id="remReq" class="btn btn-warning btn-sm" (click)="remReq(req)">
                         Remove
                         </button>
@@ -155,6 +155,10 @@
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('jobTag')?.errors?.maxlength">
                             A tag cannot be longer than 15 characters.
+                        </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('jobTag')?.errors?.pattern">
+                            A tag cannot contain anything other than letters and numbers.
                         </small>
                     </div>
                 </div>

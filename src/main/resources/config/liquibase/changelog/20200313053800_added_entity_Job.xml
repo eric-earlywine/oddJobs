@@ -25,6 +25,9 @@
             <column name="pay_amt" type="integer">
                 <constraints nullable="true" />
             </column>
+            <column name="job_desc" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="job_details_id" type="bigint">
                 <constraints unique="true" nullable="true" uniqueConstraintName="ux_job_job_details_id" />
             </column>

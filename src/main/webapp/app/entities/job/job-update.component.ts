@@ -11,9 +11,11 @@ import { JobService } from './job.service';
 import { TagService } from 'app/entities/tag/tag.service';
 import { IJobDetails } from 'app/shared/model/job-details.model';
 import { ITag, Tag } from 'app/shared/model/tag.model';
+import { IRequirement, Requirement } from 'app/shared/model/requirement.model';
 import { JobDetailsService } from 'app/entities/job-details/job-details.service';
 import { INewUser } from 'app/shared/model/new-user.model';
 import { NewUserService } from 'app/entities/new-user/new-user.service';
+import { RequirementService } from 'app/entities/requirement/requirement.service';
 
 type SelectableEntity = IJobDetails | INewUser;
 
@@ -28,7 +30,7 @@ export class JobUpdateComponent implements OnInit {
   reqExists = false;
   jobdetails: IJobDetails[] = [];
   newusers: INewUser[] = [];
-  jobReqs: string[] = [];
+  jobReqs: IRequirement[] = [];
   jobTags: Tag[] = [];
   editForm = this.fb.group({
     id: [],
@@ -38,7 +40,7 @@ export class JobUpdateComponent implements OnInit {
     jobDesc: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(280)]],
     jobReq: ['', [Validators.minLength(3), Validators.maxLength(80)]],
     jobLocation: ['', [Validators.required]],
-    jobTag: ['', [Validators.maxLength(15)]]
+    jobTag: ['', [Validators.maxLength(15), Validators.pattern('^[a-zA-Z0-9 ]*$')]]
   });
   constructor(
     protected jobService: JobService,
@@ -46,7 +48,8 @@ export class JobUpdateComponent implements OnInit {
     protected newUserService: NewUserService,
     protected activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    protected tagService: TagService
+    protected tagService: TagService,
+    protected requirementService: RequirementService
   ) {}
 
   ngOnInit(): void {
@@ -93,18 +96,34 @@ export class JobUpdateComponent implements OnInit {
   }
   addReq(): void {
     if (this.editForm.get(['jobReq'])!.value !== '' && this.editForm.get(['jobReq'])!.valid) {
-      if (this.jobReqs.includes(this.editForm.get(['jobReq'])!.value)) {
-        this.reqExists = true;
-      } else {
-        this.reqExists = false;
-        this.jobReqs.push(this.editForm.get(['jobReq'])!.value);
+      this.reqExists = false;
+      for (let i = 0; i < this.jobReqs.length; i++) {
+        // eslint-disable-next-line eqeqeq
+        if (this.jobReqs[i].requirementName == this.editForm.get(['jobReq'])!.value) {
+          this.reqExists = true;
+          break;
+        }
       }
+      if (this.reqExists === false) {
+        const newReq = this.formatReq(this.editForm.get(['jobReq'])!.value);
+        this.createReq(newReq);
+      }
+      this.editForm.patchValue({
+        jobReq: ''
+      });
     }
-    this.editForm.patchValue({
-      jobReq: ''
-    });
   }
-  remReq(req: string): void {
+  createReq(req: IRequirement): void {
+    this.subscribeToReqResponse(this.requirementService.create(req));
+  }
+  formatReq(req: string): IRequirement {
+    return {
+      ...new Requirement(),
+      id: undefined,
+      requirementName: req
+    };
+  }
+  remReq(req: IRequirement): void {
     this.jobReqs.splice(this.jobReqs.indexOf(req), 1);
   }
   clearReq(): void {
@@ -112,10 +131,11 @@ export class JobUpdateComponent implements OnInit {
   }
   checkForTag(): void {
     const tag = this.editForm.get(['jobTag']);
-    if (tag!.value !== '' && tag!.valid) {
+    const tagString = tag!.value.trim();
+    if (tagString !== '' && tag!.valid) {
       if (!this.jobTags.includes(tag!.value)) {
         this.tagService
-          .findByTagName(tag!.value)
+          .findByTagName(tagString)
           .pipe(
             map((res: HttpResponse<ITag>) => {
               return res.body;
@@ -126,10 +146,10 @@ export class JobUpdateComponent implements OnInit {
               if (resBody != null) {
                 this.addTag(resBody);
               } else {
-                this.createTag(tag!.value);
+                this.createTag(tagString);
               }
             },
-            () => this.createTag(tag!.value)
+            () => this.createTag(tagString)
           );
       }
     }
@@ -141,7 +161,7 @@ export class JobUpdateComponent implements OnInit {
     });
   }
   createTag(tag: string): void {
-    const newTag = this.createTagPlease(tag);
+    const newTag = this.formatTag(tag);
     this.subscribeToTagResponse(this.tagService.create(newTag));
   }
   remTag(tag: Tag): void {
@@ -173,11 +193,11 @@ export class JobUpdateComponent implements OnInit {
       jobTags: this.jobTags
     };
   }
-  private createTagPlease(tag: string): ITag {
+  private formatTag(tagStr: string): ITag {
     return {
       ...new Tag(),
       id: undefined,
-      tagName: tag
+      tagName: tagStr
     };
   }
 
@@ -196,7 +216,22 @@ export class JobUpdateComponent implements OnInit {
       () => this.onTagError()
     );
   }
-
+  protected subscribeToReqResponse(result: Observable<HttpResponse<IRequirement>>): void {
+    result
+      .pipe(
+        map((res: HttpResponse<IRequirement>) => {
+          return res.body;
+        })
+      )
+      .subscribe(
+        (resBody: IRequirement | null) => {
+          if (resBody != null) {
+            this.jobReqs.push(resBody);
+          }
+        },
+        () => this.onReqFail()
+      );
+  }
   protected onSaveSuccess(): void {
     this.isSaving = false;
     this.previousState();
@@ -212,6 +247,11 @@ export class JobUpdateComponent implements OnInit {
 
   protected onTagError(): void {
     this.isMakingTag = false;
+  }
+  protected onReqFail(): void {
+    this.editForm.patchValue({
+      jobReq: 'Failed'
+    });
   }
 
   trackById(index: number, item: SelectableEntity): any {

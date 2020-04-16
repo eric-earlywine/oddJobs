@@ -6,9 +6,11 @@ import javax.persistence.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.launchcode.oddjobs.domain.enumeration.PayType;
+import org.launchcode.oddjobs.repository.RequirementRepository;
 
 /**
  * A Job.
@@ -37,13 +39,21 @@ public class Job implements Serializable {
     @JoinColumn(unique = true)
     private JobDetails jobDetails;
 
+    @Column(name = "job_desc")
+    private String jobDesc;
+
+    @Column(name = "job_location")
+    private String jobLocation;
+
+    @OneToMany(mappedBy = "job")
+    private Set<Requirement> jobReqs = new HashSet<>();
+
     @OneToMany(mappedBy = "job")
     private Set<Location> locations = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties("jobs")
     private NewUser newUser;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -103,6 +113,30 @@ public class Job implements Serializable {
 
     public void setJobDetails(JobDetails jobDetails) {
         this.jobDetails = jobDetails;
+    }
+    public Set<Requirement> getRequirements() {
+        return this.jobReqs;
+    }
+
+    public Job jobReqs(Set<Requirement> jobReqs) {
+        this.jobReqs = jobReqs;
+        return this;
+    }
+
+    public Job addRequirement(Requirement jobReq) {
+        this.jobReqs.add(jobReq);
+        jobReq.setJob(this);
+        return this;
+    }
+
+    public Job removeRequirement(Requirement jobReq) {
+        this.jobReqs.remove(jobReq);
+        jobReq.setJob(null);
+        return this;
+    }
+
+    public void setRequirements(Set<Requirement> jobReqs) {
+        this.jobReqs = jobReqs;
     }
 
     public Set<Location> getLocations() {
