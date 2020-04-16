@@ -103,6 +103,13 @@ public class RequirementResource {
         return ResponseUtil.wrapOrNotFound(requirement);
     }
 
+    @GetMapping("/requirements/job/{id}")
+    public ResponseEntity<Requirement[]> getRequirementsByJob(@PathVariable Long id) {
+        log.debug("REST request to get Requirements by job ID : {}", id);
+        Optional<Requirement[]> requirement = requirementRepository.findAllByJobId(id);
+        return ResponseUtil.wrapOrNotFound(requirement);
+    }
+
     /**
      * {@code DELETE  /requirements/:id} : delete the "id" requirement.
      *

@@ -26,9 +26,11 @@ export class JobUpdateComponent implements OnInit {
   isSaving = false;
   isMakingTag = false;
   reqExists = false;
+  editing = false;
   newusers: INewUser[] = [];
   jobReqs: IRequirement[] = [];
   jobTags: Tag[] = [];
+  job: IJob = new Job();
   editForm = this.fb.group({
     id: [],
     jobName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -52,10 +54,26 @@ export class JobUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ job }) => {
       this.updateForm(job);
       this.newUserService.query().subscribe((res: HttpResponse<INewUser[]>) => (this.newusers = res.body || []));
+      if (job.id !== undefined) {
+        this.editing = true;
+        this.requirementService
+          .findByJobId(job.id)
+          .pipe(
+            map((res: HttpResponse<IRequirement[]>) => {
+              return res.body;
+            })
+          )
+          .subscribe((resBody: IRequirement[] | null) => {
+            if (resBody != null) {
+              this.jobReqs = resBody;
+            }
+          });
+      }
     });
   }
 
   updateForm(job: IJob): void {
+    this.job = job;
     this.editForm.patchValue({
       id: job.id,
       jobName: job.jobName,
@@ -64,7 +82,6 @@ export class JobUpdateComponent implements OnInit {
       jobDesc: job.jobDesc,
       jobLocation: job.jobLocation
     });
-    this.jobReqs = job.jobReqs ? job.jobReqs : [];
     this.jobTags = job.jobTags ? job.jobTags : [];
   }
   addReq(): void {
@@ -93,11 +110,15 @@ export class JobUpdateComponent implements OnInit {
     return {
       ...new Requirement(),
       id: undefined,
-      requirementName: req
+      requirementName: req,
+      job: this.editing ? this.job : undefined
     };
   }
   remReq(req: IRequirement): void {
     this.jobReqs.splice(this.jobReqs.indexOf(req), 1);
+    if (req.id !== undefined) {
+      this.subscribeToReqResponse(this.requirementService.delete(req.id));
+    }
   }
   clearReq(): void {
     this.jobReqs = [];
@@ -175,10 +196,22 @@ export class JobUpdateComponent implements OnInit {
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IJob>>): void {
-    result.subscribe(
-      () => this.onSaveSuccess(),
-      () => this.onSaveError()
-    );
+    result
+      .pipe(
+        map((res: HttpResponse<IJob>) => {
+          return res.body;
+        })
+      )
+      .subscribe(
+        (resBody: IJob | null) => {
+          if (resBody != null) {
+            this.onSaveSuccess(resBody);
+          } else {
+            this.onSaveError();
+          }
+        },
+        () => this.onSaveError()
+      );
   }
   protected subscribeToTagResponse(result: Observable<HttpResponse<ITag>>): void {
     result.subscribe(
@@ -205,8 +238,15 @@ export class JobUpdateComponent implements OnInit {
         () => this.onReqFail()
       );
   }
-  protected onSaveSuccess(): void {
+  updateReqsWithJobId(job: IJob): void {
+    for (let i = 0; i < this.jobReqs.length; i++) {
+      this.jobReqs[i].job = job;
+      this.subscribeToReqResponse(this.requirementService.update(this.jobReqs[i]));
+    }
+  }
+  protected onSaveSuccess(job: IJob): void {
     this.isSaving = false;
+    this.updateReqsWithJobId(job);
     this.previousState();
   }
 
