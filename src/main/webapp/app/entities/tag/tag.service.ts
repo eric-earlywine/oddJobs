@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared/util/request-util';
 import { ITag } from 'app/shared/model/tag.model';
-import { IRequirement } from 'app/shared/model/requirement.model';
 
 type EntityResponseType = HttpResponse<ITag>;
 type EntityArrayResponseType = HttpResponse<ITag[]>;

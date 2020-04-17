@@ -90,6 +90,29 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Job> jobs = new HashSet<>();
+
+    public User jobs(Set<Job> jobs) {
+        this.jobs = jobs;
+        return this;
+    }
+
+    public User addJob(Job job) {
+        this.jobs.add(job);
+        job.setUser(this);
+        return this;
+    }
+
+    public User removeJob(Job job) {
+        this.jobs.remove(job);
+        job.setUser(null);
+        return this;
+    }
+
+    public void setJobs(Set<Job> jobs) {
+        this.jobs = jobs;
+    }
     public Long getId() {
         return id;
     }

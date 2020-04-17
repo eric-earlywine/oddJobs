@@ -173,6 +173,16 @@ public class UserResource {
                 .map(UserDTO::new));
     }
 
+    @GetMapping("/users/current")
+    public ResponseEntity<User> getCurrentUser() {
+        log.debug("REST request for current user credentials");
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (user.isPresent()) {
+            return ResponseUtil.wrapOrNotFound(user);
+        }
+        return null;
+    }
+
     /**
      * {@code DELETE /users/:login} : delete the "login" User.
      *

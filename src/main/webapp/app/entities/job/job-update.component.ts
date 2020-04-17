@@ -14,6 +14,9 @@ import { IRequirement, Requirement } from 'app/shared/model/requirement.model';
 import { INewUser } from 'app/shared/model/new-user.model';
 import { NewUserService } from 'app/entities/new-user/new-user.service';
 import { RequirementService } from 'app/entities/requirement/requirement.service';
+import { AccountService } from 'app/core/auth/account.service';
+import { IUser, User } from 'app/core/user/user.model';
+import { UserService } from 'app/core/user/user.service';
 
 type SelectableEntity = INewUser;
 
@@ -27,11 +30,10 @@ export class JobUpdateComponent implements OnInit {
   isMakingTag = false;
   reqExists = false;
   editing = false;
-  newusers: INewUser[] = [];
   jobReqs: IRequirement[] = [];
   jobTags: Tag[] = [];
-  newTags: Tag[] = [];
   job: IJob = new Job();
+  user: IUser = new User();
   editForm = this.fb.group({
     id: [],
     jobName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -48,12 +50,15 @@ export class JobUpdateComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     protected tagService: TagService,
-    protected requirementService: RequirementService
+    protected requirementService: RequirementService,
+    protected accountService: AccountService,
+    protected userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ job }) => {
       this.updateForm(job);
+      this.getCurrentUser();
       if (job.id !== undefined) {
         this.editing = true;
         this.requirementService
@@ -94,7 +99,6 @@ export class JobUpdateComponent implements OnInit {
       jobDesc: job.jobDesc,
       jobLocation: job.jobLocation
     });
-    this.jobTags = job.jobTags ? job.jobTags : [];
   }
   addReq(): void {
     if (this.editForm.get(['jobReq'])!.value !== '' && this.editForm.get(['jobReq'])!.valid) {
@@ -106,7 +110,7 @@ export class JobUpdateComponent implements OnInit {
           break;
         }
       }
-      if (this.reqExists === false) {
+      if (!this.reqExists) {
         const newReq = this.formatReq(this.editForm.get(['jobReq'])!.value);
         this.jobReqs.push(newReq);
       }
@@ -186,8 +190,31 @@ export class JobUpdateComponent implements OnInit {
       jobDesc: this.editForm.get(['jobDesc'])!.value,
       jobReqs: this.jobReqs,
       jobLocation: this.editForm.get(['jobLocation'])!.value,
-      jobTags: this.jobTags
+      jobTags: this.jobTags,
+      user: this.user
     };
+  }
+  private getCurrentUser(): void {
+    if (this.accountService.isAuthenticated()) {
+      this.userService
+        .getCurrentUser()
+        .pipe(
+          map((res: HttpResponse<IUser>) => {
+            return res.body;
+          })
+        )
+        .subscribe(
+          (resBody: IUser | null) => {
+            if (resBody != null) {
+              this.setUser(resBody);
+            }
+          },
+          () => this.setUser(new User())
+        );
+    }
+  }
+  setUser(user: IUser): void {
+    this.user = user;
   }
   private formatTag(tagStr: string): ITag {
     return {

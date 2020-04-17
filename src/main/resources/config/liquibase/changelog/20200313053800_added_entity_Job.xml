@@ -31,6 +31,9 @@
             <column name="job_location" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <column name="new_user_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -50,7 +53,7 @@
         </createTable>
 
         <addPrimaryKey columnNames="job_id, tag_id" tableName="job_tag"/>
-        
+
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 

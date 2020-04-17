@@ -50,6 +50,13 @@
         "relationshipName": "tag",
         "otherEntityField": "id",
         "ownerSide": true
+      },
+      {
+        "relationshipType": "many-to-one",
+        "otherEntityName": "user",
+        "otherEntityRelationshipName": "jobs",
+        "relationshipName": "user",
+        "otherEntityField": "id"
       }
     ],
     "changelogDate": "20200313053800",

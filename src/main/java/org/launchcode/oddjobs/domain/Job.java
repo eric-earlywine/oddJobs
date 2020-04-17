@@ -53,7 +53,21 @@ public class Job implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags = new HashSet<>();
 
+    @ManyToOne
+    @JsonIgnoreProperties("jobs")
+    private User user;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }
