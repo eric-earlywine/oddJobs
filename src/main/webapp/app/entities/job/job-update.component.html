@@ -97,7 +97,7 @@
 
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('jobDesc')?.errors?.maxlength">
-                            A job description cannot be longer than 280 characters.
+                            A job description cannot be longer than 255 characters.
                         </small>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                 <div class="form-group">
                     <label class="form-control-label" for="jobReq">Job Requirements:</label>
                     <ul>
-                        <li *ngFor="let req of jobReqs">{{req.requirementName}}
+                        <li *ngFor="let req of jobReqs">{{ req.requirementName }}
                         <button type="button" id="remReq" class="btn btn-warning btn-sm" (click)="remReq(req)">
                         Remove
                         </button>
@@ -161,6 +161,12 @@
                             A tag cannot contain anything other than letters and numbers.
                         </small>
                     </div>
+                    <small class="form-text text-danger" *ngIf="tagExists">
+                        You've already listed this tag!
+                    </small>
+                    <small class="form-text text-danger" *ngIf="tooManyTags">
+                        Can't have more than 10 tags.
+                    </small>
                 </div>
             </div>
 
@@ -170,7 +176,7 @@
                 </button>
 
                 <button type="submit" id="save-entity" [hidden]="editForm.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span>Save23</span>
                 </button>
                 <button type="button" id="save-entity2" [hidden]="editForm.valid" class="btn btn-primary" (click)="editForm.markAllAsTouched()">
                     <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>

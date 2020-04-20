@@ -13,9 +13,9 @@ export interface IJob {
   jobDesc?: string;
   locations?: ILocation[];
   newUser?: INewUser;
-  jobReqs?: IRequirement[];
+  requirements?: IRequirement[];
   jobLocation?: string;
-  jobTags?: ITag[];
+  tags?: ITag[];
   user?: IUser;
 }
 
@@ -28,9 +28,9 @@ export class Job implements IJob {
     public jobDesc?: string,
     public locations?: ILocation[],
     public newUser?: INewUser,
-    public jobReqs?: IRequirement[],
+    public requirements?: IRequirement[],
     public jobLocation?: string,
-    public jobTags?: ITag[],
+    public tags?: ITag[],
     public user?: IUser
   ) {}
 }

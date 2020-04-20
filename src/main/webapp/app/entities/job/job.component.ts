@@ -9,10 +9,14 @@ import { IJob } from 'app/shared/model/job.model';
 import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
 import { JobService } from './job.service';
 import { JobDeleteDialogComponent } from './job-delete-dialog.component';
+import { IUser, User } from 'app/core/user/user.model';
+import { AccountService } from 'app/core/auth/account.service';
+import { UserService } from 'app/core/user/user.service';
 
 @Component({
   selector: 'jhi-job',
-  templateUrl: './job.component.html'
+  templateUrl: './job.component.html',
+  styleUrls: ['job-update.scss']
 })
 export class JobComponent implements OnInit, OnDestroy {
   jobs: IJob[];
@@ -22,12 +26,15 @@ export class JobComponent implements OnInit, OnDestroy {
   page: number;
   predicate: string;
   ascending: boolean;
+  user: IUser = new User();
 
   constructor(
     protected jobService: JobService,
     protected eventManager: JhiEventManager,
     protected modalService: NgbModal,
-    protected parseLinks: JhiParseLinks
+    protected parseLinks: JhiParseLinks,
+    protected accountService: AccountService,
+    protected userService: UserService
   ) {
     this.jobs = [];
     this.itemsPerPage = ITEMS_PER_PAGE;
@@ -36,7 +43,7 @@ export class JobComponent implements OnInit, OnDestroy {
       last: 0
     };
     this.predicate = 'id';
-    this.ascending = true;
+    this.ascending = false;
   }
 
   loadAll(): void {
@@ -61,6 +68,7 @@ export class JobComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getCurrentUser();
     this.loadAll();
     this.registerChangeInJobs();
   }
@@ -75,7 +83,22 @@ export class JobComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return item.id!;
   }
+  isMyJob(job: IJob): boolean {
+    if (job.user !== undefined && job.user.id !== undefined) {
+      return this.user.id === job.user.id;
+    }
+    return false;
+  }
 
+  private getCurrentUser(): void {
+    if (this.accountService.isAuthenticated()) {
+      this.userService.find(this.accountService.getUsername()).subscribe((resBody: IUser | null) => {
+        if (resBody != null) {
+          this.user = resBody;
+        }
+      });
+    }
+  }
   registerChangeInJobs(): void {
     this.eventSubscriber = this.eventManager.subscribe('jobListModification', () => this.reset());
   }

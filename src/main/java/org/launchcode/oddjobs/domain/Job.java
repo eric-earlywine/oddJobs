@@ -5,11 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
-
 import org.launchcode.oddjobs.domain.enumeration.PayType;
-import org.launchcode.oddjobs.repository.RequirementRepository;
 
 /**
  * A Job.
@@ -40,14 +37,13 @@ public class Job implements Serializable {
     @Column(name = "job_location")
     private String jobLocation;
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Requirement> jobReqs = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties("jobs")
     private NewUser newUser;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "job_tag",
         joinColumns = @JoinColumn(name = "job_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
@@ -146,7 +142,6 @@ public class Job implements Serializable {
         this.jobReqs = jobReqs;
         return this;
     }
-
     public Job addRequirement(Requirement jobReq) {
         this.jobReqs.add(jobReq);
         jobReq.setJob(this);
@@ -158,7 +153,6 @@ public class Job implements Serializable {
         jobReq.setJob(null);
         return this;
     }
-
     public void setRequirements(Set<Requirement> jobReqs) {
         this.jobReqs = jobReqs;
     }

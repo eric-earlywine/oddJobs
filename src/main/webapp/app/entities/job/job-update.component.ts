@@ -27,11 +27,12 @@ type SelectableEntity = INewUser;
 })
 export class JobUpdateComponent implements OnInit {
   isSaving = false;
-  isMakingTag = false;
   reqExists = false;
+  tagExists = false;
+  tooManyTags = false;
   editing = false;
   jobReqs: IRequirement[] = [];
-  jobTags: Tag[] = [];
+  jobTags: ITag[] = [];
   job: IJob = new Job();
   user: IUser = new User();
   editForm = this.fb.group({
@@ -39,7 +40,7 @@ export class JobUpdateComponent implements OnInit {
     jobName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     payType: ['', [Validators.required]],
     payAmt: ['', [Validators.required, Validators.pattern('^[0-9]+(.[0-9]{1,2})?$')]],
-    jobDesc: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(280)]],
+    jobDesc: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
     jobReq: ['', [Validators.minLength(3), Validators.maxLength(80)]],
     jobLocation: ['', [Validators.required]],
     jobTag: ['', [Validators.maxLength(15), Validators.pattern('^[a-zA-Z0-9 ]*$')]]
@@ -61,36 +62,18 @@ export class JobUpdateComponent implements OnInit {
       this.getCurrentUser();
       if (job.id !== undefined) {
         this.editing = true;
-        this.requirementService
-          .findByJobId(job.id)
-          .pipe(
-            map((res: HttpResponse<IRequirement[]>) => {
-              return res.body;
-            })
-          )
-          .subscribe((resBody: IRequirement[] | null) => {
-            if (resBody != null) {
-              this.jobReqs = resBody;
-            }
-          });
-        this.tagService
-          .findByJobId(job.id)
-          .pipe(
-            map((res: HttpResponse<ITag[]>) => {
-              return res.body;
-            })
-          )
-          .subscribe((resBody: ITag[] | null) => {
-            if (resBody != null) {
-              this.jobTags = resBody;
-            }
-          });
       }
     });
   }
 
   updateForm(job: IJob): void {
     this.job = job;
+    if (this.job.tags !== undefined) {
+      this.jobTags = this.job.tags;
+    }
+    if (this.job.requirements !== undefined) {
+      this.jobReqs = this.job.requirements;
+    }
     this.editForm.patchValue({
       id: job.id,
       jobName: job.jobName,
@@ -104,10 +87,13 @@ export class JobUpdateComponent implements OnInit {
     if (this.editForm.get(['jobReq'])!.value !== '' && this.editForm.get(['jobReq'])!.valid) {
       this.reqExists = false;
       for (let i = 0; i < this.jobReqs.length; i++) {
-        // eslint-disable-next-line eqeqeq
-        if (this.jobReqs[i].requirementName == this.editForm.get(['jobReq'])!.value) {
-          this.reqExists = true;
-          break;
+        if (this.jobReqs[i].requirementName !== undefined) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          if (this.editForm.get(['jobReq'])!.value.toLowerCase() === this.jobReqs[i].requirementName.toLowerCase()) {
+            this.reqExists = true;
+            break;
+          }
         }
       }
       if (!this.reqExists) {
@@ -123,8 +109,7 @@ export class JobUpdateComponent implements OnInit {
     return {
       ...new Requirement(),
       id: undefined,
-      requirementName: req,
-      job: this.editing ? this.job : undefined
+      requirementName: req
     };
   }
   remReq(req: IRequirement): void {
@@ -136,8 +121,19 @@ export class JobUpdateComponent implements OnInit {
   checkForTag(): void {
     const tag = this.editForm.get(['jobTag']);
     const tagString = tag!.value.trim();
-    if (tagString !== '' && tag!.valid) {
-      if (!this.jobTags.includes(tag!.value)) {
+    if (tagString !== '' && tag!.valid && !this.tooManyTags) {
+      this.tagExists = false;
+      for (let i = 0; i < this.jobTags.length; i++) {
+        if (this.jobTags[i].tagName !== undefined) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          if (this.jobTags[i].tagName.toLowerCase() === tagString.toLowerCase()) {
+            this.tagExists = true;
+            break;
+          }
+        }
+      }
+      if (!this.tagExists) {
         this.tagService
           .findByTagName(tagString)
           .pipe(
@@ -156,16 +152,22 @@ export class JobUpdateComponent implements OnInit {
             () => this.addTag(this.formatTag(tagString))
           );
       }
+      this.editForm.patchValue({
+        jobTag: ''
+      });
     }
   }
   addTag(tag: Tag): void {
     this.jobTags.push(tag);
-    this.editForm.patchValue({
-      jobTag: ''
-    });
+    if (this.jobTags.length >= 10) {
+      this.tooManyTags = true;
+    }
   }
   remTag(tag: Tag): void {
     this.jobTags.splice(this.jobTags.indexOf(tag), 1);
+    if (this.jobTags.length < 10) {
+      this.tooManyTags = false;
+    }
   }
   previousState(): void {
     window.history.back();
@@ -179,7 +181,9 @@ export class JobUpdateComponent implements OnInit {
       this.subscribeToSaveResponse(this.jobService.create(job));
     }
   }
-
+  hello(): void {
+    window.alert('Hello World');
+  }
   private createFromForm(): IJob {
     return {
       ...new Job(),
@@ -188,29 +192,19 @@ export class JobUpdateComponent implements OnInit {
       payType: this.editForm.get(['payType'])!.value,
       payAmt: this.editForm.get(['payAmt'])!.value,
       jobDesc: this.editForm.get(['jobDesc'])!.value,
-      jobReqs: this.jobReqs,
+      requirements: this.jobReqs,
       jobLocation: this.editForm.get(['jobLocation'])!.value,
-      jobTags: this.jobTags,
+      tags: this.jobTags,
       user: this.user
     };
   }
   private getCurrentUser(): void {
     if (this.accountService.isAuthenticated()) {
-      this.userService
-        .getCurrentUser()
-        .pipe(
-          map((res: HttpResponse<IUser>) => {
-            return res.body;
-          })
-        )
-        .subscribe(
-          (resBody: IUser | null) => {
-            if (resBody != null) {
-              this.setUser(resBody);
-            }
-          },
-          () => this.setUser(new User())
-        );
+      this.userService.find(this.accountService.getUsername()).subscribe((resBody: IUser | null) => {
+        if (resBody != null) {
+          this.setUser(resBody);
+        }
+      });
     }
   }
   setUser(user: IUser): void {

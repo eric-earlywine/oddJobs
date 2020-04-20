@@ -1,5 +1,6 @@
 package org.launchcode.oddjobs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class Requirement implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("requirements")
+    @JsonIgnore
     private Job job;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -82,7 +84,6 @@ public class Requirement implements Serializable {
         return "Requirement{" +
             "id=" + id +
             ", requirementName='" + requirementName + '\'' +
-            ", job=" + job +
             '}';
     }
 }

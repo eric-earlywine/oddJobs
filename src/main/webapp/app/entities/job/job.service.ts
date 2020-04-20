@@ -17,13 +17,13 @@ export class JobService {
 
   create(job: IJob): Observable<EntityResponseType> {
     const dataInfo = [];
-    dataInfo.push({ job, jobReqs: job.jobReqs, tags: job.jobTags });
+    dataInfo.push({ job, jobReqs: job.requirements, tags: job.tags });
     return this.http.post(this.resourceUrl, dataInfo, { observe: 'response' });
   }
 
   update(job: IJob): Observable<EntityResponseType> {
     const dataInfo = [];
-    dataInfo.push({ job, jobReqs: job.jobReqs, tags: job.jobTags });
+    dataInfo.push({ job, jobReqs: job.requirements, tags: job.tags });
     return this.http.put(this.resourceUrl, dataInfo, { observe: 'response' });
   }
 

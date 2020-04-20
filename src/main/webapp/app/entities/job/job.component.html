@@ -1,5 +1,5 @@
 <div>
-    <h2 id="page-heading">
+    <h2 id="page-heading" class="text-center">
         <span>Jobs</span>
 
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-job" [routerLink]="['/job/new']">
@@ -19,33 +19,32 @@
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="jobs?.length > 0">
-        <table class="table table-striped" aria-describedby="page-heading">
-            <thead>
+        <table class="table table-bordered table-hover" aria-describedby="page-heading">
+            <thead class="thead-dark">
                 <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="reset.bind(this)">
-                    <th scope="col"  jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>
-                    <th scope="col"  jhiSortBy="jobName"><span>Job Name</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"><span>Job Title</span></th>
+                    <th scope="col"><span>Posted By</span></th>
+                    <th scope="col"><span>Location</span></th>
                     <th scope="col"  jhiSortBy="payType"><span>Pay Type</span> <fa-icon icon="sort"></fa-icon></th>
                     <th scope="col"  jhiSortBy="payAmt"><span>Pay Amt</span> <fa-icon icon="sort"></fa-icon></th>
-                    <th scope="col"  jhiSortBy="jobDetails.id"><span>Job Details</span> <fa-icon icon="sort"></fa-icon></th>
-                    <th scope="col"  jhiSortBy="newUser.id"><span>New User</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"><span>Tags</span></th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
                 <tr *ngFor="let job of jobs ;trackBy: trackId">
-                    <td><a [routerLink]="['/job', job.id, 'view']">{{ job.id }}</a></td>
-                    <td>{{ job.jobName }}</td>
+                    <td><a [routerLink]="['/job', job.id, 'view']">{{ job.jobName }}</a></td>
+                    <td *ngIf="job.user" class="small-cell">{{ job.user.login }}<br>Rating: 3.7</td>
+                    <td *ngIf="!job.user" class="small-cell">Unknown</td>
+                    <td>{{ job.jobLocation }}</td>
                     <td>{{ job.payType }}</td>
                     <td>{{ job.payAmt }}</td>
                     <td>
-                        <div *ngIf="job.jobDetails">
-                            <a [routerLink]="['/job-details', job.jobDetails?.id, 'view']" >{{ job.jobDetails?.id }}</a>
-                        </div>
-                    </td>
-                    <td>
-                        <div *ngIf="job.newUser">
-                            <a [routerLink]="['/new-user', job.newUser?.id, 'view']" >{{ job.newUser?.id }}</a>
-                        </div>
+                        <ul>
+                            <li *ngFor="let tag of job.tags">
+                                <a [routerLink]="['/jobs/tagName', tag.tagName]">{{ tag.tagName }}</a>
+                            </li>
+                        </ul>
                     </td>
                     <td class="text-right">
                         <div class="btn-group">
@@ -53,17 +52,15 @@
                                     [routerLink]="['/job', job.id, 'view']"
                                     class="btn btn-info btn-sm">
                                 <fa-icon icon="eye"></fa-icon>
-                                <span class="d-none d-md-inline">View</span>
+                                <span class="d-none d-md-inline">View Details</span>
                             </button>
-
-                            <button type="submit"
+                            <button *ngIf="isMyJob(job)" type="submit"
                                     [routerLink]="['/job', job.id, 'edit']"
                                     class="btn btn-primary btn-sm">
                                 <fa-icon icon="pencil-alt"></fa-icon>
                                 <span class="d-none d-md-inline">Edit</span>
                             </button>
-
-                            <button type="submit" (click)="delete(job)"
+                            <button *ngIf="isMyJob(job)" type="submit" (click)="delete(job)"
                                     class="btn btn-danger btn-sm">
                                 <fa-icon icon="times"></fa-icon>
                                 <span class="d-none d-md-inline">Delete</span>

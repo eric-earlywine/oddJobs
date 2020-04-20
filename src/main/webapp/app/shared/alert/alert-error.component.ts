@@ -70,10 +70,10 @@ export class AlertErrorComponent implements OnDestroy {
           break;
 
         default:
-          if (httpErrorResponse.error !== '' && httpErrorResponse.error.message) {
+          if (httpErrorResponse.error !== undefined && httpErrorResponse.error.message) {
             this.addErrorAlert(httpErrorResponse.error.message);
           } else {
-            this.addErrorAlert(httpErrorResponse.error);
+            this.addErrorAlert(httpErrorResponse.message);
           }
       }
     });
