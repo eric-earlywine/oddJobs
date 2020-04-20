@@ -26,11 +26,31 @@
 .text-center {
   text-align: center;
 }
+.text-left {
+  text-align: left;
+}
 .small-cell {
   width: 10%;
 }
 .cost {
   display: inline-block;
+}
+.side-by-side {
+  display: inline-flex;
+}
+.hori {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.hori li {
+  display: inline-block;
+  font-size: 15px;
+  padding: 20px;
+}
+.hori a {
+  font-weight: bold;
 }
 input.cost {
   padding-left: 24px;

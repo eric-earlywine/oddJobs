@@ -1,36 +1,53 @@
 <div class="row justify-content-center">
-    <div class="col-8">
-        <div *ngIf="job">
-            <h2><span>Job</span> {{ job.id }}</h2>
-
+    <div class="col-md-3">
+        <div>
+            <span class="dog img-fluid rounded"></span>
+            <span class="rake img-fluid rounded"></span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div *ngIf="job" class="text-center">
+            <h1>{{ job.jobName }}</h1>
+            <h4>Posted by: <a [routerLink]="['/user', job.user.id, 'view']">{{job.user.login}}</a></h4>
+            <h6>User Rating: 3.7</h6>
             <hr>
 
             <jhi-alert-error></jhi-alert-error>
 
             <dl class="row-md jh-entity-details">
-                <dt><span>Job Name</span></dt>
-                <dd>
-                    <span>{{ job.jobName }}</span>
-                </dd>
-                <dt><span>Pay Type</span></dt>
-                <dd>
-                    <span>{{ job.payType }}</span>
-                </dd>
-                <dt><span>Pay Amt</span></dt>
-                <dd>
-                    <span>{{ job.payAmt }}</span>
-                </dd>
-                <dt><span>Job Details</span></dt>
-                <dd>
-                    <div *ngIf="job.jobDetails">
-                        <a [routerLink]="['/job-details', job.jobDetails?.id, 'view']">{{ job.jobDetails?.id }}</a>
+                <div class="side-by-side">
+                    <div class="col-md-6">
+                        <dt><span>Job Description</span></dt>
+                        <dd>
+                            <span>{{ job.jobDesc }}</span>
+                        </dd>
                     </div>
-                </dd>
-                <dt><span>New User</span></dt>
-                <dd>
-                    <div *ngIf="job.newUser">
-                        <a [routerLink]="['/new-user', job.newUser?.id, 'view']">{{ job.newUser?.id }}</a>
+                    <div class="col-md-6">
+                        <dt><span>Job Requirements:</span></dt>
+                        <dd>
+                            <ul class="text-left">
+                                <li *ngFor="let req of job.requirements">{{ req.requirementName }}</li>
+                            </ul>
+                        </dd>
                     </div>
+                </div>
+                <dt><span>How will you be paid?</span></dt>
+                <dd>
+                    <span>{{ formatPayType(job.payType) }}</span>
+                </dd>
+                <dt><span>Payment amount {{ formatPayType(job.payType) }}</span></dt>
+                <dd>
+                    <span>$ {{ job.payAmt }}</span>
+                </dd>
+                <dt><span>Location</span></dt>
+                <dd>
+                    <span>{{ job.jobLocation }}</span>
+                </dd>
+                <dt><span>Tags</span></dt>
+                <dd>
+                    <ul class="hori">
+                            <li *ngFor="let tag of job.tags"><a [routerLink]="['/jobs/tagId', tag.id]">{{ tag.tagName }}</a></li>
+                    </ul>
                 </dd>
             </dl>
 
@@ -46,5 +63,8 @@
                 <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
             </button>
         </div>
+    </div>
+    <div class="col-md-3">
+        <span class="paint img-fluid rounded"></span>
     </div>
 </div>

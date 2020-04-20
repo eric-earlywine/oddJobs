@@ -5,7 +5,8 @@ import { IJob } from 'app/shared/model/job.model';
 
 @Component({
   selector: 'jhi-job-detail',
-  templateUrl: './job-detail.component.html'
+  templateUrl: './job-detail.component.html',
+  styleUrls: ['job-update.scss']
 })
 export class JobDetailComponent implements OnInit {
   job: IJob | null = null;
@@ -14,6 +15,14 @@ export class JobDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ job }) => (this.job = job));
+  }
+  formatPayType(type: String): String {
+    if (type === 'JOBCOMPLETION') {
+      return 'On job completion';
+    } else if (type === 'HOURLY') {
+      return 'Hourly';
+    }
+    return 'Daily';
   }
 
   previousState(): void {
