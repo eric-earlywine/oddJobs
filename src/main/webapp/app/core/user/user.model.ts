@@ -15,6 +15,7 @@ export interface IUser {
   lastModifiedDate?: Date;
   password?: string;
   jobs?: IJob[];
+  jobRequests?: IJob[];
 }
 
 export class User implements IUser {
@@ -32,6 +33,7 @@ export class User implements IUser {
     public lastModifiedBy?: string,
     public lastModifiedDate?: Date,
     public password?: string,
-    public jobs?: IJob[]
+    public jobs?: IJob[],
+    public jobRequests?: IJob[]
   ) {}
 }

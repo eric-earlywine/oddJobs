@@ -15,6 +15,10 @@
     <jhi-alert-error></jhi-alert-error>
 
     <jhi-alert></jhi-alert>
+    <div *ngIf="viewUserJobs && viewUserId === user.id" class="text-right">
+        <label for="showFulfilled">Show finished jobs?</label>
+        <input type="checkbox" id="showFulfilled" (click)="toggleShowFulfilled()"/>
+    </div>
 
     <div class="alert alert-warning" id="no-result" *ngIf="jobs?.length === 0">
         <span>No jobs found</span>
@@ -67,22 +71,26 @@
                             </button>
                             <button type="submit" (click)="delete(job)"
                                     class="btn btn-danger btn-sm">
-                                <fa-icon icon="times"></fa-icon>
-                                <span class="d-none d-md-inline">Delete</span>
+                                <fa-icon icon="trash-alt"></fa-icon>
                             </button>
                             </div>
                             </div>
-                                <button *ngIf="isMyJob(job)" type="submit"
+                            <div *ngIf="isMyJob(job)" class="btn-group">
+                                <button type="submit"
                                         [routerLink]="['/job', job.id, 'edit']"
                                         class="btn btn-primary btn-sm">
                                     <fa-icon icon="pencil-alt"></fa-icon>
                                     <span class="d-none d-md-inline">Edit</span>
                                 </button>
-                                <button *ngIf="isMyJob(job)" type="submit" (click)="delete(job)"
+                                <button type="submit" (click)="delete(job)"
                                         class="btn btn-danger btn-sm">
-                                    <fa-icon icon="times"></fa-icon>
-                                    <span class="d-none d-md-inline">Delete</span>
+                                    <fa-icon icon="trash-alt"></fa-icon>
                                 </button>
+                            </div>
+                        </div>
+                        <div *ngIf="isMyJob(job)">
+                            <br>
+                            <fa-icon icon="check"></fa-icon><a href="javascript:void(0)" (click)="fulfill(job)">Mark as completed</a>
                         </div>
                     </td>
                 </tr>

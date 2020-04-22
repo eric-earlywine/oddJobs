@@ -17,6 +17,8 @@ export interface IJob {
   jobLocation?: string;
   tags?: ITag[];
   user?: IUser;
+  fulfilled?: boolean;
+  requestUsers?: IUser[];
 }
 
 export class Job implements IJob {
@@ -31,6 +33,8 @@ export class Job implements IJob {
     public requirements?: IRequirement[],
     public jobLocation?: string,
     public tags?: ITag[],
-    public user?: IUser
+    public user?: IUser,
+    public fulfilled?: boolean,
+    public requestUsers?: IUser[]
   ) {}
 }

@@ -1,11 +1,14 @@
 package org.launchcode.oddjobs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
 import java.io.Serializable;
 import java.util.*;
+
+import org.graalvm.compiler.lir.LIRInstruction;
 import org.launchcode.oddjobs.domain.enumeration.PayType;
 
 /**
@@ -37,6 +40,9 @@ public class Job implements Serializable {
     @Column(name = "job_location")
     private String jobLocation;
 
+    @Column(name = "fulfilled")
+    private boolean fulfilled;
+
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Requirement> jobReqs = new HashSet<>();
 
@@ -49,12 +55,49 @@ public class Job implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "job_request_users",
+        joinColumns = @JoinColumn(name = "job_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "request_user_id", referencedColumnName = "id"))
+    private Set<User> requestUsers = new HashSet<>();
+
     @ManyToOne
     @JsonIgnoreProperties("jobs")
     private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
+    public Set<User> getRequestUsers() {
+        return requestUsers;
+    }
 
+    public Job requestUsers(Set<User> requestUsers) {
+        this.requestUsers = requestUsers;
+        return this;
+    }
+
+    public Job addRequestUser(User user) {
+        this.requestUsers.add(user);
+        user.getJobRequests().add(this);
+        return this;
+    }
+
+    public Job removeRequestUser(User user) {
+        this.requestUsers.remove(user);
+        user.getJobRequests().remove(this);
+        return this;
+    }
+
+    public void setRequestUsers(Set<User> requestUsers) {
+        this.requestUsers = requestUsers;
+    }
+
+    public boolean isFulfilled() {
+        return fulfilled;
+    }
+
+    public void setFulfilled(boolean fulfilled) {
+        this.fulfilled = fulfilled;
+    }
 
     public User getUser() {
         return user;

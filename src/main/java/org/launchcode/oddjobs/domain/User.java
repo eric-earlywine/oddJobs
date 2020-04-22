@@ -93,6 +93,34 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @OneToMany(mappedBy = "user")
     private Set<Job> jobs = new HashSet<>();
 
+    @ManyToMany(mappedBy = "requestUsers")
+    private Set<Job> jobRequests = new HashSet<>();
+
+    public Set<Job> getJobRequests() {
+        return jobRequests;
+    }
+
+    public User jobRequests(Set<Job> jobRequests) {
+        this.jobRequests = jobRequests;
+        return this;
+    }
+
+    public User addJobRequest(Job job) {
+        this.jobRequests.add(job);
+        job.getRequestUsers().add(this);
+        return this;
+    }
+
+    public User removeJobRequest(Job job) {
+        this.jobRequests.remove(job);
+        job.getRequestUsers().remove(this);
+        return this;
+    }
+
+    public void setJobRequests(Set<Job> jobRequests) {
+        this.jobRequests = jobRequests;
+    }
+
     public User jobs(Set<Job> jobs) {
         this.jobs = jobs;
         return this;

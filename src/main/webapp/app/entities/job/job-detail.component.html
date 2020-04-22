@@ -64,8 +64,18 @@
 
             <button type="button"
                     [routerLink]="['/job', job.id, 'edit']"
-                    class="btn btn-primary" *ngIf="isMyJob(job)">
+                    class="btn btn-warning" *ngIf="isMyJob(job)">
                 <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+            </button>
+            <button type="button"
+                    (click)="requestJob(job)"
+                    class="btn btn-primary" *ngIf="!isMyJob(job) && isNotRequested(job) && !isRequesting">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Request Job</span>
+            </button>
+            <button type="button"
+                    (click)="remRequestJob(job)"
+                    class="btn btn-danger" *ngIf="!isMyJob(job) && !isNotRequested(job) && !isRequesting">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Withdraw Request</span>
             </button>
         </div>
     </div>

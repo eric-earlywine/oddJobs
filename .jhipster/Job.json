@@ -21,6 +21,10 @@
       {
         "fieldName": "jobLocation",
         "fieldType": "String"
+      },
+      {
+        "fieldName": "fulfilled",
+        "fieldType": "Boolean"
       }
     ],
     "relationships": [

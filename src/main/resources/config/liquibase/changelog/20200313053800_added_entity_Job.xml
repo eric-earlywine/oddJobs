@@ -34,11 +34,16 @@
             <column name="user_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="fulfilled" type="boolean">
+                <constraints nullable="false" />
+            </column>
             <column name="new_user_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
+        <addDefaultValue tableName="job" columnName="fulfilled" defaultValueBoolean="false"></addDefaultValue>
+        <addDefaultValue tableName="job" columnName="user_id" defaultValueNumeric="1"></addDefaultValue>
     </changeSet>
 
     <changeSet id="20200313053800-1-relations" author="jhipster">
@@ -53,6 +58,17 @@
         </createTable>
 
         <addPrimaryKey columnNames="job_id, tag_id" tableName="job_tag"/>
+
+        <createTable tableName="job_request_users">
+            <column name="job_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="job_id, request_user_id" tableName="job_request_users"/>
 
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

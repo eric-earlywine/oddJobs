@@ -1,0 +1,31 @@
+<form *ngIf="job" name="fulfillForm" [formGroup]="fulfillForm" (ngSubmit)="checkUser()">
+    <div class="form-group">
+    <div class="modal-header">
+        <h4 class="modal-title">Confirm fulfillment operation</h4>
+
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="cancel()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <label for="fulfillUser">Who fulfilled your listing?</label><small class="form-text form-danger">*Note: If the job was completed by someone without the use of this site, please simply delete your listing.</small>
+
+        <select id="fulfillUser" name="fulfillUser">
+            <option id="noSelection">Select a user</option>
+            <option *ngFor="let user of job.requestUsers" [id]="user.login">{{ user.login }}</option>
+        </select>
+        <small *ngIf="noSelection">Please select the user who fulfilled your job listing.</small>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button id="jhi-confirm-fulfill-job" type="submit" class="btn btn-success">
+            <fa-icon icon="check"></fa-icon>&nbsp;<span>Mark as fulfilled</span>
+        </button>
+    </div>
+    </div>
+</form>

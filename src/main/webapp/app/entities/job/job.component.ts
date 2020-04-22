@@ -13,6 +13,7 @@ import { JobDeleteDialogComponent } from './job-delete-dialog.component';
 import { IUser, User } from 'app/core/user/user.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { UserService } from 'app/core/user/user.service';
+import { JobFulfilledComponent } from 'app/entities/job/job-fulfilled.component';
 
 @Component({
   selector: 'jhi-job',
@@ -21,6 +22,7 @@ import { UserService } from 'app/core/user/user.service';
 })
 export class JobComponent implements OnInit, OnDestroy {
   jobs: IJob[];
+  otherJobs: IJob[] = [];
   eventSubscriber?: Subscription;
   itemsPerPage: number;
   links: any;
@@ -29,6 +31,7 @@ export class JobComponent implements OnInit, OnDestroy {
   ascending: boolean;
   viewUserJobs = false;
   viewUserId: number | undefined;
+  showFulfilled = false;
   user: IUser = new User();
 
   constructor(
@@ -49,7 +52,26 @@ export class JobComponent implements OnInit, OnDestroy {
     this.predicate = 'id';
     this.ascending = false;
   }
-
+  toggleShowFulfilled(): void {
+    this.showFulfilled = !this.showFulfilled;
+    if (this.showFulfilled) {
+      if (this.otherJobs.length > 0) {
+        this.jobs = this.jobs.concat(this.otherJobs);
+        this.otherJobs = [];
+      }
+    } else {
+      for (let i = 0; i < this.jobs.length; i++) {
+        if (this.jobs[i].fulfilled) {
+          this.otherJobs.push(this.jobs[i]);
+        }
+      }
+      for (const job of this.otherJobs) {
+        if (this.jobs.includes(job)) {
+          this.jobs.splice(this.jobs.indexOf(job), 1);
+        }
+      }
+    }
+  }
   loadAll(): void {
     this.jobService
       .query({
@@ -67,13 +89,23 @@ export class JobComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.jobService
-      .findAllByUser(id, {
-        page: this.page,
-        size: this.itemsPerPage,
-        sort: this.sort()
-      })
-      .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+    if (this.viewUserJobs && this.viewUserId === this.user.id) {
+      this.jobService
+        .findAllByUser(id, {
+          page: this.page,
+          size: this.itemsPerPage,
+          sort: this.sort()
+        })
+        .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+    } else {
+      this.jobService
+        .findAllByUserNoFulfilled(id, {
+          page: this.page,
+          size: this.itemsPerPage,
+          sort: this.sort()
+        })
+        .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+    }
   }
 
   reset(): void {
@@ -96,14 +128,13 @@ export class JobComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getCurrentUser();
     this.activatedRoute.data.subscribe(({ observeUser }) => {
       if (observeUser.id !== undefined) {
         this.viewUserJobs = true;
         this.viewUserId = observeUser.id;
-        this.load(this.viewUserId);
+        this.getCurrentUser();
       } else {
-        this.load();
+        this.getCurrentUser();
       }
     });
     this.registerChangeInJobs();
@@ -138,6 +169,11 @@ export class JobComponent implements OnInit, OnDestroy {
       this.userService.find(this.accountService.getUsername()).subscribe((resBody: IUser | null) => {
         if (resBody != null) {
           this.user = resBody;
+          if (this.viewUserJobs) {
+            this.load(this.viewUserId);
+          } else {
+            this.load();
+          }
         }
       });
     }
@@ -148,6 +184,11 @@ export class JobComponent implements OnInit, OnDestroy {
 
   delete(job: IJob): void {
     const modalRef = this.modalService.open(JobDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.job = job;
+  }
+
+  fulfill(job: IJob): void {
+    const modalRef = this.modalService.open(JobFulfilledComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.job = job;
   }
 
@@ -171,7 +212,15 @@ export class JobComponent implements OnInit, OnDestroy {
     this.links = this.parseLinks.parse(headersLink ? headersLink : '');
     if (data) {
       for (let i = 0; i < data.length; i++) {
-        this.jobs.push(data[i]);
+        if (this.showFulfilled) {
+          this.jobs.push(data[i]);
+        } else {
+          if (data[i].fulfilled) {
+            this.otherJobs.push(data[i]);
+          } else {
+            this.jobs.push(data[i]);
+          }
+        }
       }
     }
   }

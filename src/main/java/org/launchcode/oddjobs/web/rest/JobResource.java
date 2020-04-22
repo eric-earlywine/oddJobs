@@ -145,7 +145,7 @@ public class JobResource {
     @GetMapping("/jobs")
     public ResponseEntity<List<Job>> getAllJobs(Pageable pageable) {
         log.debug("REST request to get a page of Jobs");
-        Page<Job> page = jobRepository.findAll(pageable);
+        Page<Job> page = jobRepository.findByFulfilledFalse(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -170,6 +170,12 @@ public class JobResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());    }
 
+    @GetMapping("/jobs/user2/{id}")
+    public ResponseEntity<List<Job>> getAllJobsByUserNoFulfilled(@PathVariable Long id, Pageable pageable) {
+        log.debug("REST request to get jobs for User (no fulfilled): {}", id);
+        Page<Job> page = jobRepository.findAllByUserIdAndFulfilledFalse(id, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());    }
     /**
      * {@code DELETE  /jobs/:id} : delete the "id" job.
      *

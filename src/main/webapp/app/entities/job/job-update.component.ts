@@ -119,6 +119,10 @@ export class JobUpdateComponent implements OnInit {
     this.jobReqs = [];
   }
   checkForTag(): void {
+    if (this.jobTags.length >= 10) {
+      this.tooManyTags = true;
+      return;
+    }
     const tag = this.editForm.get(['jobTag']);
     const tagString = tag!.value.trim();
     if (tagString !== '' && tag!.valid && !this.tooManyTags) {
@@ -159,9 +163,6 @@ export class JobUpdateComponent implements OnInit {
   }
   addTag(tag: Tag): void {
     this.jobTags.push(tag);
-    if (this.jobTags.length >= 10) {
-      this.tooManyTags = true;
-    }
   }
   remTag(tag: Tag): void {
     this.jobTags.splice(this.jobTags.indexOf(tag), 1);

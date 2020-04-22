@@ -31,5 +31,17 @@
                                  referencedColumnNames="id"
                                  referencedTableName="tag"/>
 
+        <addForeignKeyConstraint baseColumnNames="job_id"
+                                 baseTableName="job_request_users"
+                                 constraintName="fk_job_request_users_job_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="job"/>
+
+        <addForeignKeyConstraint baseColumnNames="request_user_id"
+                                 baseTableName="job_request_users"
+                                 constraintName="fk_job_request_users_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
     </changeSet>
 </databaseChangeLog>

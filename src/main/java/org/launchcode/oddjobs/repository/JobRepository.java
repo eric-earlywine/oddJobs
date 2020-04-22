@@ -17,4 +17,6 @@ import java.util.Optional;
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
    Page<Job> findAllByUserId(long userId, Pageable pageable);
+   Page<Job> findAllByUserIdAndFulfilledFalse(long userId, Pageable pageable);
+   Page<Job> findByFulfilledFalse(Pageable pageable);
 }
