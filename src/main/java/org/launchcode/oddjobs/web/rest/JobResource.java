@@ -158,10 +158,17 @@ public class JobResource {
      */
     @GetMapping("/jobs/{id}")
     public ResponseEntity<Job> getJob(@PathVariable Long id) {
-        log.debug("REST request to get Job : {}", id);
+        log.debug("REST request to get Job: {}", id);
         Optional<Job> job = jobRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(job);
     }
+
+    @GetMapping("/jobs/user/{id}")
+    public ResponseEntity<List<Job>> getAllJobsByUser(@PathVariable Long id, Pageable pageable) {
+        log.debug("REST request to get jobs for User : {}", id);
+        Page<Job> page = jobRepository.findAllByUserId(id, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());    }
 
     /**
      * {@code DELETE  /jobs/:id} : delete the "id" job.

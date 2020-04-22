@@ -3,6 +3,7 @@ import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute } from '@angular/router';
 
 import { IJob } from 'app/shared/model/job.model';
 
@@ -26,6 +27,8 @@ export class JobComponent implements OnInit, OnDestroy {
   page: number;
   predicate: string;
   ascending: boolean;
+  viewUserJobs = false;
+  viewUserId: number | undefined;
   user: IUser = new User();
 
   constructor(
@@ -34,7 +37,8 @@ export class JobComponent implements OnInit, OnDestroy {
     protected modalService: NgbModal,
     protected parseLinks: JhiParseLinks,
     protected accountService: AccountService,
-    protected userService: UserService
+    protected userService: UserService,
+    protected activatedRoute: ActivatedRoute
   ) {
     this.jobs = [];
     this.itemsPerPage = ITEMS_PER_PAGE;
@@ -55,28 +59,67 @@ export class JobComponent implements OnInit, OnDestroy {
       })
       .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
   }
+  loadUserJobs(id: number): void {
+    if (this.jobs.length > 0) {
+      if (this.jobs[0].user !== undefined) {
+        if (id !== this.jobs[0].user.id) {
+          this.jobs = [];
+        }
+      }
+    }
+    this.jobService
+      .findAllByUser(id, {
+        page: this.page,
+        size: this.itemsPerPage,
+        sort: this.sort()
+      })
+      .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+  }
 
   reset(): void {
     this.page = 0;
     this.jobs = [];
-    this.loadAll();
+    if (this.viewUserJobs) {
+      this.load(this.viewUserId);
+    } else {
+      this.loadAll();
+    }
   }
 
   loadPage(page: number): void {
     this.page = page;
-    this.loadAll();
+    if (this.viewUserJobs) {
+      this.load(this.viewUserId);
+    } else {
+      this.loadAll();
+    }
   }
 
   ngOnInit(): void {
     this.getCurrentUser();
-    this.loadAll();
+    this.activatedRoute.data.subscribe(({ observeUser }) => {
+      if (observeUser.id !== undefined) {
+        this.viewUserJobs = true;
+        this.viewUserId = observeUser.id;
+        this.load(this.viewUserId);
+      } else {
+        this.load();
+      }
+    });
     this.registerChangeInJobs();
   }
-
+  load(id?: number): void {
+    if (id) {
+      this.loadUserJobs(id);
+    } else {
+      this.loadAll();
+    }
+  }
   ngOnDestroy(): void {
     if (this.eventSubscriber) {
       this.eventManager.destroy(this.eventSubscriber);
     }
+    this.jobs = [];
   }
 
   trackId(index: number, item: IJob): number {
@@ -115,7 +158,14 @@ export class JobComponent implements OnInit, OnDestroy {
     }
     return result;
   }
-
+  jobsPostedBy(): string {
+    if (this.jobs.length > 0) {
+      if (this.jobs[0].user !== undefined && this.jobs[0].user.login !== undefined) {
+        return this.jobs[0].user.login;
+      }
+    }
+    return 'Unknown';
+  }
   protected paginateJobs(data: IJob[] | null, headers: HttpHeaders): void {
     const headersLink = headers.get('link');
     this.links = this.parseLinks.parse(headersLink ? headersLink : '');

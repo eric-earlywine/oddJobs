@@ -181,9 +181,6 @@ export class JobUpdateComponent implements OnInit {
       this.subscribeToSaveResponse(this.jobService.create(job));
     }
   }
-  hello(): void {
-    window.alert('Hello World');
-  }
   private createFromForm(): IJob {
     return {
       ...new Job(),

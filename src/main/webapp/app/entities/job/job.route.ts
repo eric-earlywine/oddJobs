@@ -10,6 +10,8 @@ import { JobService } from './job.service';
 import { JobComponent } from './job.component';
 import { JobDetailComponent } from './job-detail.component';
 import { JobUpdateComponent } from './job-update.component';
+import { IUser, User } from 'app/core/user/user.model';
+import { UserService } from 'app/core/user/user.service';
 
 @Injectable({ providedIn: 'root' })
 export class JobResolve implements Resolve<IJob> {
@@ -32,11 +34,38 @@ export class JobResolve implements Resolve<IJob> {
     return of(new Job());
   }
 }
+@Injectable({ providedIn: 'root' })
+export class UserResolve implements Resolve<IUser> {
+  constructor(private service: UserService) {}
+
+  resolve(route: ActivatedRouteSnapshot): Observable<IUser> {
+    const id = route.params['login'];
+    if (id) {
+      return this.service.find(id);
+    }
+    return of(new User());
+  }
+}
 
 export const jobRoute: Routes = [
   {
     path: '',
     component: JobComponent,
+    resolve: {
+      observeUser: UserResolve
+    },
+    data: {
+      authorities: ['ROLE_USER'],
+      pageTitle: 'Jobs'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'user/:login',
+    component: JobComponent,
+    resolve: {
+      observeUser: UserResolve
+    },
     data: {
       authorities: ['ROLE_USER'],
       pageTitle: 'Jobs'
