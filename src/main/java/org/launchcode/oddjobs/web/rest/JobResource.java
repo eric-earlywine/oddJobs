@@ -151,6 +151,32 @@ public class JobResource {
     }
 
     /**
+     * {@code GET /jobs/search/:key} : get all jobs whose name contains "key".
+     * @param key
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/jobs/search/{key}")
+    public ResponseEntity<List<Job>> getAllJobsSearch(@PathVariable String key, Pageable pageable) {
+        log.debug("REST request to get a page of Jobs with search term: {}", key);
+        Page<Job> page = jobRepository.findAllByJobNameContainingOrJobLocationContaining(key, key, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/jobs/tag/{id}")
+    public ResponseEntity<List<Job>> getAllJobsByTagId(@PathVariable long id, Pageable pageable) {
+        log.debug("REST request to get a page of Jobs with tag: {}", id);
+        Optional<Tag> tag = tagRepository.findById(id);
+        if (tag.isPresent()) {
+            Page<Job> page = jobRepository.findAllByTagsContaining(tag.get(), pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
+        }
+        return null;
+    }
+
+    /**
      * {@code GET  /jobs/:id} : get the "id" job.
      *
      * @param id the id of the job to retrieve.
@@ -163,6 +189,12 @@ public class JobResource {
         return ResponseUtil.wrapOrNotFound(job);
     }
 
+    /**
+     *  {@code GET /jobs/user/:id} : get all jobs from user "id".
+     * @param id the id of the user.
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with the list of jobs in the body.
+     */
     @GetMapping("/jobs/user/{id}")
     public ResponseEntity<List<Job>> getAllJobsByUser(@PathVariable Long id, Pageable pageable) {
         log.debug("REST request to get jobs for User : {}", id);
@@ -170,6 +202,12 @@ public class JobResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());    }
 
+    /**
+     *  {@code GET /jobs/user2/:id} : get all jobs that aren't fulfilled from user "id".
+     * @param id the id of the user.
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with the list of jobs in the body.
+     */
     @GetMapping("/jobs/user2/{id}")
     public ResponseEntity<List<Job>> getAllJobsByUserNoFulfilled(@PathVariable Long id, Pageable pageable) {
         log.debug("REST request to get jobs for User (no fulfilled): {}", id);

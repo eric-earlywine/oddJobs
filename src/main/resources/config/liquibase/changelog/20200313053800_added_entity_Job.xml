@@ -37,6 +37,9 @@
             <column name="fulfilled" type="boolean">
                 <constraints nullable="false" />
             </column>
+            <column name="fulfilled_user_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <column name="new_user_id" type="bigint">
                 <constraints nullable="true" />
             </column>

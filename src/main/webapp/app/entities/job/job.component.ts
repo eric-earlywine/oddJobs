@@ -31,6 +31,7 @@ export class JobComponent implements OnInit, OnDestroy {
   ascending: boolean;
   viewUserJobs = false;
   viewUserId: number | undefined;
+  viewUser?: IUser;
   showFulfilled = false;
   user: IUser = new User();
 
@@ -131,6 +132,7 @@ export class JobComponent implements OnInit, OnDestroy {
     this.activatedRoute.data.subscribe(({ observeUser }) => {
       if (observeUser.id !== undefined) {
         this.viewUserJobs = true;
+        this.viewUser = observeUser;
         this.viewUserId = observeUser.id;
         this.getCurrentUser();
       } else {
@@ -200,12 +202,10 @@ export class JobComponent implements OnInit, OnDestroy {
     return result;
   }
   jobsPostedBy(): string {
-    if (this.jobs.length > 0) {
-      if (this.jobs[0].user !== undefined && this.jobs[0].user.login !== undefined) {
-        return this.jobs[0].user.login;
-      }
+    if (this.viewUser && this.viewUser.login) {
+      return this.viewUser.login;
     }
-    return 'Unknown';
+    return 'Unknown user';
   }
   protected paginateJobs(data: IJob[] | null, headers: HttpHeaders): void {
     const headersLink = headers.get('link');

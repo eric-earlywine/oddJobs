@@ -10,10 +10,28 @@
             <h1>{{ job.jobName }}</h1>
             <h4>Posted by: <a [routerLink]="['/job/user', job.user.login]">{{job.user.login}}</a></h4>
             <h6>User Rating: 3.7</h6>
+
+            <button type="button"
+                    (click)="fulfill(job)"
+                    class="btn btn-success" *ngIf="isMyJob(job) && !job.fulfilled">
+                <fa-icon icon="check"></fa-icon>&nbsp;<span>Mark as completed</span>
+            </button>
+
+            <div *ngIf="job.fulfilled">
+                <h1 class="text-danger">Completed by: <a [routerLink]="['/job/user', job.fulfilledUser.login]">{{job.fulfilledUser.login}}</a></h1>
+            </div>
             <hr>
 
             <jhi-alert-error></jhi-alert-error>
-
+            <div *ngIf="job.requestUsers && !job.fulfilled">
+                <h4>User requests</h4>
+                <div class="col-md-4 offset-md-4">
+                <ul class="text-left">
+                    <li *ngIf="job.requestUsers.length < 1">No User Requests yet</li>
+                    <li *ngFor="let user of job.requestUsers">User: {{user.login}} <a [href]="['mailto:', user.email]">Email</a></li>
+                </ul>
+                </div>
+            </div>
             <dl class="row-md jh-entity-details">
                 <div class="side-by-side">
                     <div class="col-md-6">
@@ -64,7 +82,7 @@
 
             <button type="button"
                     [routerLink]="['/job', job.id, 'edit']"
-                    class="btn btn-warning" *ngIf="isMyJob(job)">
+                    class="btn btn-warning" *ngIf="isMyJob(job) && !job.fulfilled">
                 <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
             </button>
             <button type="button"

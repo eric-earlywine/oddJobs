@@ -78,7 +78,7 @@
                             <div *ngIf="isMyJob(job)" class="btn-group">
                                 <button type="submit"
                                         [routerLink]="['/job', job.id, 'edit']"
-                                        class="btn btn-primary btn-sm">
+                                        class="btn btn-primary btn-sm" *ngIf="!job.fulfilled">
                                     <fa-icon icon="pencil-alt"></fa-icon>
                                     <span class="d-none d-md-inline">Edit</span>
                                 </button>
@@ -88,9 +88,13 @@
                                 </button>
                             </div>
                         </div>
-                        <div *ngIf="isMyJob(job)">
+                        <div *ngIf="isMyJob(job) && !job.fulfilled">
                             <br>
                             <fa-icon icon="check"></fa-icon><a href="javascript:void(0)" (click)="fulfill(job)">Mark as completed</a>
+                        </div>
+                        <div *ngIf="isMyJob(job) && job.fulfilled">
+                            <br>
+                            <fa-icon icon="check"></fa-icon><span class="job-completed">Job completed by: <a [routerLink]="['/job/user', job.fulfilledUser.login]">{{job.fulfilledUser.login}}</a></span>
                         </div>
                     </td>
                 </tr>

@@ -43,6 +43,11 @@ public class Job implements Serializable {
     @Column(name = "fulfilled")
     private boolean fulfilled;
 
+    @OneToOne
+    @JoinColumn(name = "fulfilled_user_id")
+    @JsonIgnoreProperties({"jobs", "jobRequests", "firstName", "lastName", "activated", "langKey", "resetDate"})
+    private User fulfilledUser;
+
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Requirement> jobReqs = new HashSet<>();
 
@@ -59,10 +64,11 @@ public class Job implements Serializable {
     @JoinTable(name = "job_request_users",
         joinColumns = @JoinColumn(name = "job_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "request_user_id", referencedColumnName = "id"))
+    @JsonIgnoreProperties({"jobs", "jobRequests", "firstName", "lastName", "activated", "langKey", "resetDate"})
     private Set<User> requestUsers = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties("jobs")
+    @JsonIgnoreProperties({"jobs", "jobRequests", "firstName", "lastName", "activated", "langKey", "resetDate"})
     private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -105,6 +111,14 @@ public class Job implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public User getFulfilledUser() {
+        return fulfilledUser;
+    }
+
+    public void setFulfilledUser(User fulfilledUser) {
+        this.fulfilledUser = fulfilledUser;
     }
 
     public Long getId() {

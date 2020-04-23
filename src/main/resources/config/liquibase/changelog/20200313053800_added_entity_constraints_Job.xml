@@ -7,11 +7,18 @@
         Added the constraints for entity Job.
     -->
     <changeSet id="20200313053800-2" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="fulfilled_user_id"
+                                 baseTableName="job"
+                                 constraintName="fk_job_fulfilled_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="job"
                                  constraintName="fk_job_user_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
+
 
         <addForeignKeyConstraint baseColumnNames="new_user_id"
                                  baseTableName="job"
