@@ -24,5 +24,4 @@ public interface JobRepository extends JpaRepository<Job, Long> {
    Page<Job> findByFulfilledFalse(Pageable pageable);
    Page<Job> findAllByJobNameContainingOrJobLocationContaining(String key, String key2, Pageable pageable);
    Page<Job> findAllByTagsContaining(Tag tag, Pageable pageable);
-   Page<Job> findAllByTags(Collection<Set<Tag>> tags, Pageable pageable);
 }

@@ -79,6 +79,14 @@ export class JobComponent implements OnInit, OnDestroy {
       }
     }
   }
+  formatPayType(type: String): String {
+    if (type === 'JOBCOMPLETION') {
+      return 'on job completion';
+    } else if (type === 'HOURLY') {
+      return 'per hour';
+    }
+    return 'per day';
+  }
   loadAll(): void {
     this.jobService
       .query({

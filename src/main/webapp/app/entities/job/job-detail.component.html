@@ -23,7 +23,7 @@
             <hr>
 
             <jhi-alert-error></jhi-alert-error>
-            <div *ngIf="job.requestUsers && !job.fulfilled">
+            <div *ngIf="job.requestUsers && !job.fulfilled && isMyJob(job)">
                 <h4>User requests</h4>
                 <div class="col-md-4 offset-md-4">
                 <ul class="text-left">
@@ -68,7 +68,7 @@
                 <dt><span>Tags</span></dt>
                 <dd>
                     <ul class="hori">
-                            <li *ngFor="let tag of job.tags"><a [routerLink]="['/jobs/tagId', tag.id]">{{ tag.tagName }}</a></li>
+                            <li *ngFor="let tag of job.tags"><a [routerLink]="['/job/tag', tag.id]">{{ tag.tagName }}</a></li>
                     </ul>
                 </dd>
                 </div>

@@ -33,7 +33,7 @@
                     <th scope="col" jhiSortBy="jobName" *ngIf="viewUserJobs"><span>Job Title</span><fa-icon icon="sort"></fa-icon></th>
                     <th scope="col"><span>Posted By</span></th>
                     <th scope="col" *ngIf="!viewUserJobs"><span>Location</span></th>
-                    <th scope="col" jhiSortBy="jobLocation" *ngIf="viewUserJobs"><span>Location</span><fa-icon icon="sort"></fa-icon></th>                    <th scope="col"  jhiSortBy="payType"><span>Pay Type</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col" jhiSortBy="jobLocation" *ngIf="viewUserJobs"><span>Location</span><fa-icon icon="sort"></fa-icon></th>
                     <th scope="col"  jhiSortBy="payAmt"><span>Pay Amt</span> <fa-icon icon="sort"></fa-icon></th>
                     <th scope="col"><span>Tags</span></th>
                     <th scope="col"></th>
@@ -45,8 +45,7 @@
                     <td *ngIf="job.user" class="small-cell"><a [routerLink]="['/job/user', job.user.login]">{{ job.user.login }}</a><br>Rating: 3.7</td>
                     <td *ngIf="!job.user" class="small-cell">Unknown</td>
                     <td>{{ job.jobLocation }}</td>
-                    <td>{{ job.payType }}</td>
-                    <td>{{ job.payAmt }}</td>
+                    <td>${{ job.payAmt }} {{formatPayType(job.payType)}}</td>
                     <td>
                         <ul>
                             <li *ngFor="let tag of job.tags">
