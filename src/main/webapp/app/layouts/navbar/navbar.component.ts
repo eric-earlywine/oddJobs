@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
 
 import { VERSION } from 'app/app.constants';
 import { AccountService } from 'app/core/auth/account.service';
@@ -17,13 +18,17 @@ export class NavbarComponent implements OnInit {
   isNavbarCollapsed = true;
   swaggerEnabled?: boolean;
   version: string;
-
+  searchForm = this.fb.group({
+    search: ['', [Validators.required]]
+  });
   constructor(
     private loginService: LoginService,
     private accountService: AccountService,
     private loginModalService: LoginModalService,
     private profileService: ProfileService,
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder,
+    private route: ActivatedRoute
   ) {
     this.version = VERSION ? (VERSION.toLowerCase().startsWith('v') ? VERSION : 'v' + VERSION) : '';
   }
@@ -51,6 +56,17 @@ export class NavbarComponent implements OnInit {
       return this.accountService.getUsername();
     }
     return 'Account';
+  }
+  getSearch(): string {
+    if (this.searchForm.get(['search'])!.value !== null) {
+      return this.searchForm.get(['search'])!.value;
+    }
+    return '';
+  }
+  clearForm(): void {
+    this.searchForm.patchValue({
+      search: ''
+    });
   }
 
   logout(): void {

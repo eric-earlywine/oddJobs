@@ -27,11 +27,17 @@ export class JobComponent implements OnInit, OnDestroy {
   itemsPerPage: number;
   links: any;
   page: number;
+  loading = false;
   predicate: string;
   ascending: boolean;
   viewUserJobs = false;
   viewUserId: number | undefined;
   viewUser?: IUser;
+  viewSearch = false;
+  viewSearchKey: string | undefined;
+  viewTag = false;
+  viewTagId: number | undefined;
+  viewTagName: string | undefined;
   showFulfilled = false;
   user: IUser = new User();
 
@@ -82,68 +88,104 @@ export class JobComponent implements OnInit, OnDestroy {
       })
       .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
   }
-  loadUserJobs(id: number): void {
-    if (this.jobs.length > 0) {
-      if (this.jobs[0].user !== undefined) {
-        if (id !== this.jobs[0].user.id) {
-          this.jobs = [];
-        }
+  loadSearch(key?: string): void {
+    if (key) {
+      if (this.viewSearch) {
+        this.jobService
+          .findAllContaining(key, {
+            page: this.page,
+            size: this.itemsPerPage,
+            sort: this.sort()
+          })
+          .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
       }
     }
-    if (this.viewUserJobs && this.viewUserId === this.user.id) {
-      this.jobService
-        .findAllByUser(id, {
-          page: this.page,
-          size: this.itemsPerPage,
-          sort: this.sort()
-        })
-        .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
-    } else {
-      this.jobService
-        .findAllByUserNoFulfilled(id, {
-          page: this.page,
-          size: this.itemsPerPage,
-          sort: this.sort()
-        })
-        .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+  }
+  loadTag(id?: number): void {
+    if (id) {
+      if (this.viewTag) {
+        this.jobService
+          .findAllByTag(id, {
+            page: this.page,
+            size: this.itemsPerPage,
+            sort: this.sort()
+          })
+          .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+      }
+    }
+  }
+  loadUserJobs(id?: number): void {
+    if (id) {
+      if (this.jobs.length > 0) {
+        if (this.jobs[0].user !== undefined) {
+          if (id !== this.jobs[0].user.id) {
+            this.jobs = [];
+          }
+        }
+      }
+      if (this.viewUserJobs && this.viewUserId === this.user.id) {
+        this.jobService
+          .findAllByUser(id, {
+            page: this.page,
+            size: this.itemsPerPage,
+            sort: this.sort()
+          })
+          .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+      } else {
+        this.jobService
+          .findAllByUserNoFulfilled(id, {
+            page: this.page,
+            size: this.itemsPerPage,
+            sort: this.sort()
+          })
+          .subscribe((res: HttpResponse<IJob[]>) => this.paginateJobs(res.body, res.headers));
+      }
     }
   }
 
   reset(): void {
     this.page = 0;
     this.jobs = [];
-    if (this.viewUserJobs) {
-      this.load(this.viewUserId);
-    } else {
-      this.loadAll();
-    }
+    this.load();
   }
 
   loadPage(page: number): void {
     this.page = page;
-    if (this.viewUserJobs) {
-      this.load(this.viewUserId);
-    } else {
-      this.loadAll();
-    }
+    this.loading = true;
+    this.load();
   }
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ observeUser }) => {
+    this.activatedRoute.data.subscribe(({ observeUser, search, tag }) => {
       if (observeUser.id !== undefined) {
         this.viewUserJobs = true;
         this.viewUser = observeUser;
         this.viewUserId = observeUser.id;
-        this.getCurrentUser();
-      } else {
-        this.getCurrentUser();
+      } else if (search) {
+        this.viewSearch = true;
+        this.viewSearchKey = search;
+      } else if (tag.id !== undefined) {
+        this.viewTag = true;
+        this.viewTagId = tag.id;
+        this.viewTagName = tag.tagName;
       }
+      this.getCurrentUser();
     });
     this.registerChangeInJobs();
   }
-  load(id?: number): void {
-    if (id) {
-      this.loadUserJobs(id);
+  load(): void {
+    if (!this.loading) {
+      this.jobs = [];
+      this.page = 0;
+    } else {
+      this.loading = false;
+    }
+    if (this.viewUserJobs) {
+      this.loadUserJobs(this.viewUserId);
+    } else if (this.viewSearch) {
+      this.loadSearch(this.viewSearchKey);
+    } else if (this.viewTag) {
+      this.loadTag(this.viewTagId);
     } else {
       this.loadAll();
     }
@@ -171,11 +213,7 @@ export class JobComponent implements OnInit, OnDestroy {
       this.userService.find(this.accountService.getUsername()).subscribe((resBody: IUser | null) => {
         if (resBody != null) {
           this.user = resBody;
-          if (this.viewUserJobs) {
-            this.load(this.viewUserId);
-          } else {
-            this.load();
-          }
+          this.load();
         }
       });
     }

@@ -35,6 +35,14 @@ export class JobService {
     const options = createRequestOption(req);
     return this.http.get<IJob[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
+  findAllContaining(key: string, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IJob[]>(`${this.resourceUrl}/search/${key}`, { params: options, observe: 'response' });
+  }
+  findAllByTag(id: number, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IJob[]>(`${this.resourceUrl}/tag/${id}`, { params: options, observe: 'response' });
+  }
   findAllByUser(id: number, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IJob[]>(`${this.resourceUrl}/user/${id}`, { params: options, observe: 'response' });

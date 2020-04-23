@@ -5,9 +5,9 @@
     <a class="navbar-toggler d-lg-none" href="javascript:void(0);" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
         <fa-icon icon="bars"></fa-icon>
     </a>
-    <form *ngIf="isAuthenticated()" class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search Jobs" aria-label="Search">
-        <button class="btn btn-info my-2 my-sm-0" type="submit"><fa-icon icon="search"></fa-icon></button>
+    <form name="fulfillForm" [formGroup]="searchForm" *ngIf="isAuthenticated()" class="form-inline my-2 my-lg-0" (ngSubmit)="clearForm()">
+        <input formControlName="search" class="form-control mr-sm-2" type="search" placeholder="Search Jobs" aria-label="Search">
+        <button class="btn btn-info my-2 my-sm-0" [routerLink]="['/job/search/', getSearch()]" type="submit"><fa-icon icon="search"></fa-icon></button>
     </form>
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
         <ul class="navbar-nav ml-auto">

@@ -1,8 +1,9 @@
 <div>
     <h2 id="page-heading" class="text-center">
-        <span *ngIf="!viewUserJobs">Jobs</span>
+        <span *ngIf="!viewUserJobs && !viewSearch">Jobs <span *ngIf="viewTag">with tag: {{viewTagName}}</span></span>
         <span *ngIf="viewUserJobs && viewUserId === user.id">My Job Listings</span>
         <span *ngIf="viewUserJobs && viewUserId !== user.id">Jobs Posted By: {{ jobsPostedBy() }}</span>
+        <span *ngIf="viewSearch">Jobs Containing: "{{ viewSearchKey }}"</span>
 
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-job" [routerLink]="['/job/new']">
             <fa-icon icon="plus"></fa-icon>
@@ -49,7 +50,7 @@
                     <td>
                         <ul>
                             <li *ngFor="let tag of job.tags">
-                                <a [routerLink]="['/jobs/tagName', tag.tagName]">{{ tag.tagName }}</a>
+                                <a [routerLink]="['/job/tag', tag.id]">{{ tag.tagName }}</a>
                             </li>
                         </ul>
                     </td>

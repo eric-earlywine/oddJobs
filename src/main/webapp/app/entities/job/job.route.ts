@@ -12,6 +12,7 @@ import { JobDetailComponent } from './job-detail.component';
 import { JobUpdateComponent } from './job-update.component';
 import { IUser, User } from 'app/core/user/user.model';
 import { UserService } from 'app/core/user/user.service';
+import { TagResolve } from 'app/entities/tag/tag.route';
 
 @Injectable({ providedIn: 'root' })
 export class JobResolve implements Resolve<IJob> {
@@ -46,13 +47,27 @@ export class UserResolve implements Resolve<IUser> {
     return of(new User());
   }
 }
+@Injectable({ providedIn: 'root' })
+export class SearchResolve {
+  constructor() {}
+
+  resolve(route: ActivatedRouteSnapshot): String | null {
+    const key = route.params['key'];
+    if (key) {
+      return key;
+    }
+    return null;
+  }
+}
 
 export const jobRoute: Routes = [
   {
     path: '',
     component: JobComponent,
     resolve: {
-      observeUser: UserResolve
+      observeUser: UserResolve,
+      search: SearchResolve,
+      tag: TagResolve
     },
     data: {
       authorities: ['ROLE_USER'],
@@ -64,7 +79,37 @@ export const jobRoute: Routes = [
     path: 'user/:login',
     component: JobComponent,
     resolve: {
-      observeUser: UserResolve
+      observeUser: UserResolve,
+      search: SearchResolve,
+      tagId: TagResolve
+    },
+    data: {
+      authorities: ['ROLE_USER'],
+      pageTitle: 'Jobs'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'tag/:id',
+    component: JobComponent,
+    resolve: {
+      observeUser: UserResolve,
+      search: SearchResolve,
+      tag: TagResolve
+    },
+    data: {
+      authorities: ['ROLE_USER'],
+      pageTitle: 'Jobs'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'search/:key',
+    component: JobComponent,
+    resolve: {
+      observeUser: UserResolve,
+      search: SearchResolve,
+      tagId: TagResolve
     },
     data: {
       authorities: ['ROLE_USER'],
